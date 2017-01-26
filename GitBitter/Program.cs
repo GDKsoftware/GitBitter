@@ -24,7 +24,16 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + "\n\n" + (ex.InnerException != null ? ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace : ex.StackTrace));
+                Console.WriteLine(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine(ex.InnerException.Message);
+                    Console.WriteLine(ex.InnerException.StackTrace);
+                }
+                else
+                {
+                    Console.WriteLine(ex.StackTrace);
+                }
 
                 Environment.Exit(ex.HResult);
             }
