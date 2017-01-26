@@ -13,7 +13,8 @@
 
         public PackageUnwrapper(string APackageSettingsFile = "gitbitter.json") : base(APackageSettingsFile)
         {
-            currentWorkdirectory = Environment.CurrentDirectory;
+            currentWorkdirectory = Path.GetDirectoryName(Path.GetFullPath(APackageSettingsFile));
+            currentWorkdirectory = Path.GetFullPath(Path.Combine(currentWorkdirectory, ".."));
         }
 
         public void StartAndWaitForUnwrapping()

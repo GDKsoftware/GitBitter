@@ -28,12 +28,11 @@ namespace GitBitterEdit
             }
         }
 
-        public RepoSelect()
+        public RepoSelect(IBitterRepositoryLister repoLister, string teamName)
         {
             InitializeComponent();
 
-            var lister = new BitbucketLister();
-            lstRepositories.ItemsSource = lister.GetRepositories("GDK");
+            lstRepositories.ItemsSource = repoLister.GetRepositories(teamName);
             lstRepositories.DisplayMemberPath = "Name";
         }
 

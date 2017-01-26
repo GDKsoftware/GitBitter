@@ -8,7 +8,8 @@
 
     public class GitSharpCloner : ICloner
     {
-        private const string appName = "gitbitter:bitbucket";
+        private const string appNameBitbucket = "gitbitter:bitbucket";
+        private const string appNameGithub = "gitbitter:github";
         private Identity identity;
 
         public GitSharpCloner()
@@ -27,7 +28,13 @@
             var credentials = new SecureUsernamePasswordCredentials();
             if (repository.Contains("bitbucket"))
             {
-                var cred = CredentialManager.ReadCredential(appName);
+                var cred = CredentialManager.ReadCredential(appNameBitbucket);
+                credentials.Username = cred.UserName;
+                credentials.Password = cred.Password;
+            }
+            else if (repository.Contains("github"))
+            {
+                var cred = CredentialManager.ReadCredential(appNameGithub);
                 credentials.Username = cred.UserName;
                 credentials.Password = cred.Password;
             }
@@ -65,14 +72,15 @@
             {
                 var fullRepoPath = Path.Combine(rootdir, repodir);
 
-                var repo = new Repository(fullRepoPath);
-                repo.Reset(ResetMode.Hard);
-
                 var options = new PullOptions();
                 options.FetchOptions = new FetchOptions();
                 options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
 
                 var sig = new Signature(identity, DateTime.Now);
+
+                var repo = new Repository(fullRepoPath);
+                repo.Reset(ResetMode.Hard);
+
                 Commands.Pull(repo, sig, options);
 
                 Commands.Checkout(repo, branch);

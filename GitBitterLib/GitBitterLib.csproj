@@ -64,6 +64,7 @@
     <Compile Include="CredentialManager.cs" />
     <Compile Include="CredentialUI.cs" />
     <Compile Include="GitConfig.cs" />
+    <Compile Include="GitHubLister.cs" />
     <Compile Include="ICloner.cs" />
     <Compile Include="GitCmdCloner.cs" />
     <Compile Include="GitSharpCloner.cs" />

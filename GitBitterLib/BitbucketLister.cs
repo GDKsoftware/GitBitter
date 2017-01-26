@@ -69,8 +69,8 @@
             {
                 var repoEndPoint = sharpBucket.RepositoriesEndPoint();
 
-                var userRepos = repoEndPoint.ListRepositories(team);
-                foreach (var project in userRepos)
+                var teamRepositories = repoEndPoint.ListRepositories(team);
+                foreach (var project in teamRepositories)
                 {
                     var listerProject = new RepositoryDescription();
                     listerProject.Name = project.name;

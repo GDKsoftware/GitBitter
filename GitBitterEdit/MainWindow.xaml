@@ -22,8 +22,9 @@
             <GridSplitter x:Name="gridSplitter" Width="5" Grid.Column="1" HorizontalAlignment="Stretch"/>
             <Grid Margin="402,0,0,0">
             </Grid>
-            <Button x:Name="btnUpdateAll" Content="Update all" HorizontalAlignment="Left" Margin="10,0,0,10" Width="131" Height="20" VerticalAlignment="Bottom" Click="btnUpdateAll_Click"/>
+            <Button x:Name="btnUpdateAll" Content="Update all" HorizontalAlignment="Left" Margin="10,0,0,10" Width="131" VerticalAlignment="Bottom" Click="btnUpdateAll_Click"/>
             <Button x:Name="btnAddFromBitBucket" Content="Add from Bitbucket" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="130" Click="btnAddFromBitBucket_Click"/>
+            <Button x:Name="btnAddFromGitHub" Content="Add from GitHub" Grid.Column="2" Margin="10,41,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="130" Click="btnAddFromGitHub_Click"/>
         </Grid>
     </Grid>
 </Window>

@@ -42,24 +42,31 @@
         {
             if (!File.Exists(packageSettingsFile))
             {
-                throw new FileNotFoundException(packageSettingsFile + " not found");
+                this.Filename = packageSettingsFile;
+
+                this.Settings = new PackageSettings();
             }
+            else
+            {
+                this.Filename = packageSettingsFile;
 
-            this.Filename = packageSettingsFile;
-
-            LoadFromFile();
+                LoadFromFile();
+            }
         }
 
         public void MakeBackup()
         {
-            File.Copy(Filename, Filename + ".bak", true);
+            if (File.Exists(Filename))
+            {
+                File.Copy(Filename, Filename + ".bak", true);
+            }
         }
 
         public void Save()
         {
             MakeBackup();
 
-            while (!CanBeOpened())
+            while (File.Exists(Filename) && !CanBeOpened())
             {
                 Thread.Sleep(100);
             }
