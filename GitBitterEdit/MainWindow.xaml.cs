@@ -21,7 +21,8 @@ namespace GitBitterEdit
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string teamName = "GDK";
+        private const string teamNameBitbucket = "GDK";
+        private const string teamNameGitHub = "gdksoftware";
         private string settingsPath;
         private PackageConfig config;
 
@@ -78,18 +79,25 @@ namespace GitBitterEdit
 
         private void btnAddFromBitBucket_Click(object sender, RoutedEventArgs e)
         {
-            var select = new RepoSelect(new BitbucketLister(), teamName);
-            select.Owner = this;
-            select.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-            var res = select.ShowDialog();
-            if (res == true)
+            try
             {
-                var repo = select.SelectRepository;
-                if (repo != null)
+                var select = new RepoSelect(new BitbucketLister(), teamNameBitbucket);
+                select.Owner = this;
+                select.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+                var res = select.ShowDialog();
+                if (res == true)
                 {
-                    AddPackage(repo);
+                    var repo = select.SelectRepository;
+                    if (repo != null)
+                    {
+                        AddPackage(repo);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
             }
         }
 
@@ -98,7 +106,10 @@ namespace GitBitterEdit
             var package = new Package();
             package.Repository = repo.URL;
             package.Folder = repo.Name;
-            //package.Branch = repo.DefaultBranch;
+            if (!String.IsNullOrEmpty(repo.DefaultBranch))
+            {
+                package.Branch = repo.DefaultBranch;
+            }
 
             config.Settings.Packages.Add(package);
 
@@ -111,7 +122,7 @@ namespace GitBitterEdit
         {
             try
             {
-                var select = new RepoSelect(new GitHubLister(), teamName);
+                var select = new RepoSelect(new GitHubLister(), teamNameGitHub);
                 select.Owner = this;
                 select.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -128,6 +139,10 @@ namespace GitBitterEdit
             catch (NotImplementedException)
             {
                 MessageBox.Show("Oops, something hasn't been implemented yet...");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
             }
         }
     }

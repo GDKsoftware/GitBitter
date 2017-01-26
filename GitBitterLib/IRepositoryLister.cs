@@ -7,6 +7,7 @@
         public string Name { get; set; }
         public string URL { get; set; }
         public string Description { get; set; }
+        public string DefaultBranch { get; set; }
     }
 
     public interface IBitterRepositoryLister

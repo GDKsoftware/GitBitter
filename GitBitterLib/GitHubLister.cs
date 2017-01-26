@@ -1,5 +1,6 @@
 ﻿namespace GitBitterLib
 {
+    using Octokit;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -13,6 +14,7 @@
     {
         private const string appName = "gitbitter:github";
         private const string preferedLinkProtocol = "https";
+        private GitHubClient github;
         private string username;
 
         /// <summary>
@@ -37,7 +39,6 @@
                 }
             }
 
-            //sharpBucket.BasicAuthentication(cred.UserName, cred.Password.ToInsecureString());
             username = cred.UserName;
             cred = null;
 
@@ -46,9 +47,28 @@
 
         public List<RepositoryDescription> GetRepositories(string team)
         {
+            github = new GitHubClient(new ProductHeaderValue("GitBitter"));
+
             Login();
 
-            throw new NotImplementedException();
+            var lstRepos = new List<RepositoryDescription>();
+
+            var task = github.Repository.GetAllForOrg(team);
+            task.Wait();
+
+            var repos = task.Result;
+            foreach (var repo in repos)
+            {
+                var desc = new RepositoryDescription();
+                desc.Name = repo.Name;
+                desc.Description = repo.Description;
+                desc.DefaultBranch = repo.DefaultBranch;
+                desc.URL = repo.CloneUrl;
+
+                lstRepos.Add(desc);
+            }
+
+            return lstRepos;
         }
     }
 }
