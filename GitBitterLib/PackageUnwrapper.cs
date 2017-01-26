@@ -7,7 +7,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public class PackageUnwrapper : Packages
+    public class PackageUnwrapper : PackageConfig
     {
         protected string currentWorkdirectory;
 
@@ -19,12 +19,19 @@
         public void StartAndWaitForUnwrapping()
         {
             var unwrappers = new List<Task>();
-            foreach (var package in settings.Packages)
+            foreach (var package in Settings.Packages)
             {
                 unwrappers.Add(Unwrap(package));
             }
 
-            Task.WaitAll(unwrappers.ToArray());
+            try
+            {
+                Task.WaitAll(unwrappers.ToArray());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         protected Task Unwrap(Package APackage)
@@ -32,7 +39,7 @@
             var cloner = new GitSharpCloner();
             if (Directory.Exists(Path.Combine(currentWorkdirectory, APackage.Folder)))
             {
-                return cloner.ResetAndUpdateExisting(currentWorkdirectory, APackage.Folder, APackage.Branch);
+                return cloner.ResetAndUpdateExisting(APackage.Repository, currentWorkdirectory, APackage.Folder, APackage.Branch);
             }
             else
             {

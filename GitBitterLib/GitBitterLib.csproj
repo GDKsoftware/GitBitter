@@ -50,6 +50,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,14 +61,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitbucketLister.cs" />
+    <Compile Include="CredentialManager.cs" />
+    <Compile Include="CredentialUI.cs" />
+    <Compile Include="GitConfig.cs" />
     <Compile Include="ICloner.cs" />
     <Compile Include="GitCmdCloner.cs" />
     <Compile Include="GitSharpCloner.cs" />
-    <Compile Include="IPackageLister.cs" />
-    <Compile Include="Packages.cs" />
+    <Compile Include="IniFile.cs" />
+    <Compile Include="IRepositoryLister.cs" />
+    <Compile Include="PackageConfig.cs" />
     <Compile Include="PackageSettings.cs" />
     <Compile Include="PackageUnwrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecureStringHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

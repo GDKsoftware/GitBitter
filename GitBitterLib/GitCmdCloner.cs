@@ -57,7 +57,7 @@
             return task;
         }
 
-        public Task ResetAndUpdateExisting(string rootdir, string repodir, string branch)
+        public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branch)
         {
             var task = new Task(() => {
                 var destinationdir = GetDestinationFolder(rootdir, repodir);
