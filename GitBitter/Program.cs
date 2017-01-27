@@ -2,11 +2,14 @@
 {
     using System;
     using GitBitterLib;
+    using Microsoft.Practices.Unity;
 
     class Program
     {
         static void Main(string[] args)
         {
+            GitBitterContainer.Default.RegisterType<ICloner, GitSharpCloner>();
+
             try
             {
                 if (args.Length > 0)

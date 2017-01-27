@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitBitter", "GitBitter\GitB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitBitterLib", "GitBitterLib\GitBitterLib.csproj", "{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitBitterTest", "GitBitterTest\GitBitterTest.csproj", "{9C773588-7AED-47CF-8411-3995D4C515D7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207} = {6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +32,10 @@ Global
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C773588-7AED-47CF-8411-3995D4C515D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C773588-7AED-47CF-8411-3995D4C515D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C773588-7AED-47CF-8411-3995D4C515D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C773588-7AED-47CF-8411-3995D4C515D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
