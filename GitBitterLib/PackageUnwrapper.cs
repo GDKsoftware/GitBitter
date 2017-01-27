@@ -25,14 +25,7 @@
                 unwrappers.Add(Unwrap(package));
             }
 
-            try
-            {
-                Task.WaitAll(unwrappers.ToArray());
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            Task.WaitAll(unwrappers.ToArray());
         }
 
         protected Task Unwrap(Package APackage)
