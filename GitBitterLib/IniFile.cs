@@ -13,10 +13,10 @@
         public string Path;
 
         [DllImport("kernel32")]
-        private static extern long WritePrivateProfilestring(string section, string key, string val, string filePath);
+        private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
 
         [DllImport("kernel32")]
-        private static extern int GetPrivateProfilestring(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
         /// <summary>
         /// INIFile Constructor.
@@ -38,7 +38,7 @@
         /// Value Name
         public void IniWriteValue(string section, string key, string value)
         {
-            WritePrivateProfilestring(section, key, value, this.Path);
+            WritePrivateProfileString(section, key, value, this.Path);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@
         public string IniReadValue(string section, string key)
         {
             StringBuilder temp = new StringBuilder(255);
-            int i = GetPrivateProfilestring(section, key, string.Empty, temp, 255, this.Path);
+            int i = GetPrivateProfileString(section, key, string.Empty, temp, 255, this.Path);
             return temp.ToString();
         }
     }
