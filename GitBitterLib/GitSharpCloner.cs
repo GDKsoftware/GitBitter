@@ -1,15 +1,15 @@
 ﻿namespace GitBitterLib
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
     using LibGit2Sharp;
-    using System.IO;
     using LibGit2Sharp.Handlers;
 
     public class GitSharpCloner : ICloner
     {
-        private const string appNameBitbucket = "gitbitter:bitbucket";
-        private const string appNameGithub = "gitbitter:github";
+        private const string AppNameBitbucket = "gitbitter:bitbucket";
+        private const string AppNameGithub = "gitbitter:github";
         private Identity identity;
 
         public GitSharpCloner()
@@ -28,13 +28,13 @@
             var credentials = new SecureUsernamePasswordCredentials();
             if (repository.Contains("bitbucket"))
             {
-                var cred = CredentialManager.ReadCredential(appNameBitbucket);
+                var cred = CredentialManager.ReadCredential(AppNameBitbucket);
                 credentials.Username = cred.UserName;
                 credentials.Password = cred.Password;
             }
             else if (repository.Contains("github"))
             {
-                var cred = CredentialManager.ReadCredential(appNameGithub);
+                var cred = CredentialManager.ReadCredential(AppNameGithub);
                 credentials.Username = cred.UserName;
                 credentials.Password = cred.Password;
             }

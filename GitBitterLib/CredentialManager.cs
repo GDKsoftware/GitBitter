@@ -2,9 +2,9 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using System.Security;
     using System.Text;
     using Microsoft.Win32.SafeHandles;
-    using System.Security;
 
     /// <summary>
     /// https://gist.github.com/meziantou/10311113
@@ -16,11 +16,11 @@
 
         public static Credential ReadCredential(string applicationName)
         {
-            IntPtr nCredPtr;
-            bool read = CredRead(applicationName, CredentialType.Generic, 0, out nCredPtr);
+            IntPtr credPtr;
+            bool read = CredRead(applicationName, CredentialType.Generic, 0, out credPtr);
             if (read)
             {
-                using (CriticalCredentialHandle critCred = new CriticalCredentialHandle(nCredPtr))
+                using (CriticalCredentialHandle critCred = new CriticalCredentialHandle(credPtr))
                 {
                     CREDENTIAL cred = critCred.GetCredential();
                     return ReadCredential(cred);
@@ -57,8 +57,8 @@
                 throw new ArgumentNullException("password is null or empty");
             }
 
-            string passwordAsString = password.ToInsecureString();
-            byte[] byteArray = Encoding.Unicode.GetBytes(passwordAsString);
+            string passwordAsstring = password.ToInSecureString();
+            byte[] byteArray = Encoding.Unicode.GetBytes(passwordAsstring);
 
             if (byteArray.Length > MaximumCredentialBlobSize)
             {
@@ -67,15 +67,15 @@
 
             CREDENTIAL cred = new CREDENTIAL();
             cred.TargetName = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUni(applicationName);
-            cred.CredentialBlob = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUni(passwordAsString);
-            cred.CredentialBlobSize = (uint)Encoding.Unicode.GetBytes(passwordAsString).Length;
+            cred.CredentialBlob = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUni(passwordAsstring);
+            cred.CredentialBlobSize = (uint)Encoding.Unicode.GetBytes(passwordAsstring).Length;
             cred.AttributeCount = 0;
             cred.Attributes = IntPtr.Zero;
             cred.Comment = IntPtr.Zero;
             cred.TargetAlias = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUni(applicationName);
             cred.Type = CredentialType.Generic;
             cred.Persist = CredentialPersistence.LocalMachine;
-            cred.UserName = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUni(userName.ToInsecureString());
+            cred.UserName = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUni(userName.ToInSecureString());
 
             bool written = CredWrite(ref cred, 0);
             int lastError = Marshal.GetLastWin32Error();
@@ -89,13 +89,13 @@
         }
         
         [DllImport("Advapi32.dll", EntryPoint = "CredReadW", CharSet = CharSet.Unicode, SetLastError = true)]
-        static extern bool CredRead(string target, CredentialType type, int reservedFlag, out IntPtr credentialPtr);
+        private static extern bool CredRead(string target, CredentialType type, int reservedFlag, out IntPtr credentialPtr);
 
         [DllImport("Advapi32.dll", EntryPoint = "CredWriteW", CharSet = CharSet.Unicode, SetLastError = true)]
-        static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] UInt32 flags);
+        private static extern bool CredWrite([In] ref CREDENTIAL userCredential, [In] uint flags);
 
         [DllImport("Advapi32.dll", EntryPoint = "CredFree", SetLastError = true)]
-        static extern bool CredFree([In] IntPtr cred);
+        private static extern bool CredFree([In] IntPtr cred);
 
         private enum CredentialPersistence : uint
         {
@@ -121,7 +121,7 @@
             public IntPtr UserName;
         }
 
-        sealed class CriticalCredentialHandle : CriticalHandleZeroOrMinusOneIsInvalid
+        private sealed class CriticalCredentialHandle : CriticalHandleZeroOrMinusOneIsInvalid
         {
             public CriticalCredentialHandle(IntPtr preexistingHandle)
             {
@@ -167,37 +167,37 @@
 
     public class Credential
     {
-        private readonly string _applicationName;
-        private readonly string _userName;
-        private readonly SecureString _password;
-        private readonly CredentialType _credentialType;
+        private readonly string applicationName;
+        private readonly string userName;
+        private readonly SecureString password;
+        private readonly CredentialType credentialType;
 
         public CredentialType CredentialType
         {
-            get { return _credentialType; }
+            get { return credentialType; }
         }
 
         public string ApplicationName
         {
-            get { return _applicationName; }
+            get { return applicationName; }
         }
 
         public string UserName
         {
-            get { return _userName; }
+            get { return userName; }
         }
 
         public SecureString Password
         {
-            get { return _password; }
+            get { return password; }
         }
 
         public Credential(CredentialType credentialType, string applicationName, string userName, SecureString password)
         {
-            _applicationName = applicationName;
-            _userName = userName;
-            _password = password;
-            _credentialType = credentialType;
+            this.applicationName = applicationName;
+            this.userName = userName;
+            this.password = password;
+            this.credentialType = credentialType;
         }
 
         public override string ToString()

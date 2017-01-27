@@ -1,31 +1,26 @@
 ﻿namespace GitBitterLib
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using SharpBucket.V2;
-    using System.Net;
 
     public class BitbucketLister : IBitterRepositoryLister
     {
-        private const string appName = "gitbitter:bitbucket";
-        private const string preferedLinkProtocol = "https";
+        private const string AppName = "gitbitter:bitbucket";
+        private const string PreferedLinkProtocol = "https";
         private SharpBucketV2 sharpBucket;
         private string username;
 
         protected bool Login()
         {
-            var cred = CredentialManager.ReadCredential(appName);
+            var cred = CredentialManager.ReadCredential(AppName);
             while (cred == null)
             {
-                var promptedcredentials = CredentialUI.PromptForCredentialsWithSecureString(appName, "GitBitter", "Please enter your BitBucket login credentials");
+                var promptedcredentials = CredentialUI.PromptForCredentialsWithSecureString(AppName, "GitBitter", "Please enter your BitBucket login credentials");
                 if (promptedcredentials != null)
                 {
-                    CredentialManager.WriteCredential(appName, promptedcredentials.UserName, promptedcredentials.Password);
+                    CredentialManager.WriteCredential(AppName, promptedcredentials.UserName, promptedcredentials.Password);
 
-                    cred = CredentialManager.ReadCredential(appName);
+                    cred = CredentialManager.ReadCredential(AppName);
                 }
                 else
                 {
@@ -33,7 +28,7 @@
                 }
             }
 
-            sharpBucket.BasicAuthentication(cred.UserName, cred.Password.ToInsecureString());
+            sharpBucket.BasicAuthentication(cred.UserName, cred.Password.ToInSecureString());
             username = cred.UserName;
             cred = null;
 
@@ -42,13 +37,13 @@
 
         private string GetPreferredLinkFromRepo(SharpBucket.V2.Pocos.Repository project)
         {
-            string url = "";
+            string url = string.Empty;
 
             foreach (var link in project.links.clone)
             {
-                if (link.name == preferedLinkProtocol)
+                if (link.name == PreferedLinkProtocol)
                 {
-                    url = link.href.Replace(username + "@", "");
+                    url = link.href.Replace(username + "@", string.Empty);
                     break;
                 }
                 else
@@ -80,7 +75,6 @@
                     repositories.Add(listerProject);
                 }
             }
-
 
             return repositories;
         }

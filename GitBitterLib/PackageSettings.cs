@@ -5,7 +5,9 @@
     public class Package
     {
         public string Folder { get; set; }
+
         public string Repository { get; set; }
+
         public string Branch { get; set; }
 
         public Package()

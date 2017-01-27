@@ -7,13 +7,10 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    /// <summary>
-    /// Todo: Implement using https://github.com/octokit/octokit.net
-    /// </summary>
     public class GitHubLister : IBitterRepositoryLister
     {
-        private const string appName = "gitbitter:github";
-        private const string preferedLinkProtocol = "https";
+        private const string AppName = "gitbitter:github";
+        private const string PreferedLinkProtocol = "https";
         private GitHubClient github;
         private string username;
 
@@ -23,15 +20,15 @@
         /// <returns></returns>
         protected bool Login()
         {
-            var cred = CredentialManager.ReadCredential(appName);
+            var cred = CredentialManager.ReadCredential(AppName);
             while (cred == null)
             {
-                var promptedcredentials = CredentialUI.PromptForCredentialsWithSecureString(appName, "GitBitter", "Please enter your GitHub login credentials");
+                var promptedcredentials = CredentialUI.PromptForCredentialsWithSecureString(AppName, "GitBitter", "Please enter your GitHub login credentials");
                 if (promptedcredentials != null)
                 {
-                    CredentialManager.WriteCredential(appName, promptedcredentials.UserName, promptedcredentials.Password);
+                    CredentialManager.WriteCredential(AppName, promptedcredentials.UserName, promptedcredentials.Password);
 
-                    cred = CredentialManager.ReadCredential(appName);
+                    cred = CredentialManager.ReadCredential(AppName);
                 }
                 else
                 {
