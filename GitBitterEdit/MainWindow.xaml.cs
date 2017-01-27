@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Microsoft.Practices.Unity;
 using GitBitterLib;
 using System.IO;
 
@@ -29,6 +30,8 @@ namespace GitBitterEdit
         public MainWindow()
         {
             InitializeComponent();
+
+            GitBitterContainer.Default.RegisterType<ICloner, GitSharpCloner>();
 
             settingsPath = Environment.CurrentDirectory;
 
