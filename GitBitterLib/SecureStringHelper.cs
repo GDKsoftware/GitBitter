@@ -6,7 +6,7 @@
 
     public static class SecureStringHelper
     {
-        public static String ToInsecureString(this SecureString s)
+        public static string ToInSecureString(this SecureString s)
         {
             IntPtr p = IntPtr.Zero;
             try
@@ -17,15 +17,20 @@
             finally
             {
                 if (p != IntPtr.Zero)
+                {
                     Marshal.ZeroFreeCoTaskMemUnicode(p);
+                }
             }
         }
 
-        public static SecureString PtrToSecureString(IntPtr p, Int32 length)
+        public static SecureString PtrToSecureString(IntPtr p, int length)
         {
             SecureString s = new SecureString();
             for (var i = 0; i < length; i++)
-                s.AppendChar((Char)Marshal.ReadInt16(p, i * sizeof(Int16)));
+            {
+                s.AppendChar((char)Marshal.ReadInt16(p, i * sizeof(short)));
+            }
+
             s.MakeReadOnly();
             return s;
         }

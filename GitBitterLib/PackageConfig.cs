@@ -1,13 +1,13 @@
 ﻿namespace GitBitterLib
 {
-    using Newtonsoft.Json;
     using System.IO;
     using System.Threading;
+    using Newtonsoft.Json;
 
     public class PackageConfig
     {
         public PackageSettings Settings = null;
-        public string Filename = "";
+        public string Filename = string.Empty;
 
         protected void LoadFromFile()
         {

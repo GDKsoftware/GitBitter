@@ -20,7 +20,7 @@
             info.Arguments = arguments;
             info.WindowStyle = ProcessWindowStyle.Hidden;
             info.UseShellExecute = false;
-            if (workingdirectory != "")
+            if (workingdirectory != string.Empty)
             {
                 info.WorkingDirectory = workingdirectory;
             }
@@ -59,12 +59,14 @@
 
         public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branch)
         {
-            var task = new Task(() => {
-                var destinationdir = GetDestinationFolder(rootdir, repodir);
-                SyncExec(gitCommand, "reset --hard", destinationdir);
-                SyncExec(gitCommand, "pull", destinationdir);
-                SyncExec(gitCommand, "checkout " + branch, destinationdir);
-            });
+            var task = new Task(
+                () =>
+                {
+                    var destinationdir = GetDestinationFolder(rootdir, repodir);
+                    SyncExec(gitCommand, "reset --hard", destinationdir);
+                    SyncExec(gitCommand, "pull", destinationdir);
+                    SyncExec(gitCommand, "checkout " + branch, destinationdir);
+                });
 
             task.Start();
 

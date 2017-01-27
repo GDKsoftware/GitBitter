@@ -8,7 +8,7 @@
         public string UserName;
         public string UserEmail;
 
-        protected string Filepath;
+        protected string filepath;
 
         public GitConfig()
         {
@@ -18,7 +18,7 @@
 
         protected void LoadConfigFile()
         {
-            var ini = new IniFile(Filepath);
+            var ini = new IniFile(filepath);
             UserName = ini.IniReadValue("user", "name");
             UserEmail = ini.IniReadValue("user", "email");
         }
@@ -31,7 +31,7 @@
                 path = Directory.GetParent(path).ToString();
             }
 
-            Filepath = Path.Combine(path, ".gitconfig");
+            filepath = Path.Combine(path, ".gitconfig");
         }
     }
 }

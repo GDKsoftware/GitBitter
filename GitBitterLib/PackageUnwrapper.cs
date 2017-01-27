@@ -11,9 +11,9 @@
     {
         protected string currentWorkdirectory;
 
-        public PackageUnwrapper(string APackageSettingsFile = "gitbitter.json") : base(APackageSettingsFile)
+        public PackageUnwrapper(string packageSettingsFile = "gitbitter.json") : base(packageSettingsFile)
         {
-            currentWorkdirectory = Path.GetDirectoryName(Path.GetFullPath(APackageSettingsFile));
+            currentWorkdirectory = Path.GetDirectoryName(Path.GetFullPath(packageSettingsFile));
             currentWorkdirectory = Path.GetFullPath(Path.Combine(currentWorkdirectory, ".."));
         }
 
@@ -28,16 +28,16 @@
             Task.WaitAll(unwrappers.ToArray());
         }
 
-        protected Task Unwrap(Package APackage)
+        protected Task Unwrap(Package package)
         {
             var cloner = new GitSharpCloner();
-            if (Directory.Exists(Path.Combine(currentWorkdirectory, APackage.Folder)))
+            if (Directory.Exists(Path.Combine(currentWorkdirectory, package.Folder)))
             {
-                return cloner.ResetAndUpdateExisting(APackage.Repository, currentWorkdirectory, APackage.Folder, APackage.Branch);
+                return cloner.ResetAndUpdateExisting(package.Repository, currentWorkdirectory, package.Folder, package.Branch);
             }
             else
             {
-                return cloner.Clone(APackage.Repository, currentWorkdirectory, APackage.Folder, APackage.Branch);
+                return cloner.Clone(package.Repository, currentWorkdirectory, package.Folder, package.Branch);
             }
         }
     }
