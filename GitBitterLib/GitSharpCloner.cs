@@ -18,9 +18,42 @@
             identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
         }
 
+        protected string GetIdRSAFilepath()
+        {
+            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                path = Directory.GetParent(path).ToString();
+            }
+
+            return Path.Combine(path, ".ssh/id_rsa");
+        }
+
+        protected string GetPublicKeyFilepath()
+        {
+            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
+            if (Environment.OSVersion.Version.Major >= 6)
+            {
+                path = Directory.GetParent(path).ToString();
+            }
+
+            return Path.Combine(path, ".ssh/id_rsa.pub");
+        }
+
         public Task Clone(string repository, string rootdir, string repodir, string branch)
         {
             return CloneBitBucketRepo(repository, rootdir, repodir, branch);
+        }
+
+        private CredentialsHandler GetCredentialHandlerSSH(string repository)
+        {
+            var credentials = new SshUserKeyCredentials();
+            credentials.Username = "git";
+            credentials.Passphrase = "";
+            credentials.PrivateKey = GetIdRSAFilepath();
+            credentials.PublicKey = GetPublicKeyFilepath();
+
+            return (_url, _user, _cred) => credentials;
         }
 
         private CredentialsHandler GetCredentialHandler(string repository)
@@ -48,7 +81,7 @@
             options.BranchName = branch;
             options.Checkout = true;
 
-            options.CredentialsProvider = GetCredentialHandler(repository);
+            options.CredentialsProvider = GetCredentialHandlerSSH(repository);
 
             return options;
         }
@@ -57,10 +90,11 @@
         {
             var task = new Task(() =>
             {
-                var options = GetCloneOptions(repository, branch);
+                var url = repository.Replace("https://", "ssh://git@");
+                var options = GetCloneOptions(url, branch);
                 var fullRepoPath = Path.Combine(rootdir, repodir);
 
-                Repository.Clone(repository, fullRepoPath, options);
+                Repository.Clone(url, fullRepoPath, options);
             });
             task.Start();
             return task;
@@ -71,6 +105,8 @@
             var task = new Task(() =>
             {
                 var fullRepoPath = Path.Combine(rootdir, repodir);
+
+                var url = repository.Replace("https://", "ssh://git@");
 
                 var options = new PullOptions();
                 options.FetchOptions = new FetchOptions();
