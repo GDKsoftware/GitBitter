@@ -160,11 +160,11 @@ namespace GitBitterEdit
             }
         }
 
-        private void EditPackage(Package Package)
+        private void EditPackage(Package package)
         {
             var form = new EditPackageDetails();
             form.Owner = this;
-            form.SetObject(Package);
+            form.SetObject(package);
             if (form.ShowDialog() == true)
             {
                 config.Save();
