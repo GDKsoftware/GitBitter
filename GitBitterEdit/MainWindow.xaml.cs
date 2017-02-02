@@ -152,9 +152,12 @@ namespace GitBitterEdit
         private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var idx = listBox.SelectedIndex;
-            var package = config.Settings.Packages[idx];
+            if (idx != -1)
+            {
+                var package = config.Settings.Packages[idx];
 
-            EditPackage(package);
+                EditPackage(package);
+            }
         }
 
         private void EditPackage(Package Package)
