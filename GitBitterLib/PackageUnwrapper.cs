@@ -1,12 +1,12 @@
 ﻿namespace GitBitterLib
 {
-    using Microsoft.Practices.Unity;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Microsoft.Practices.Unity;
 
     public class PackageUnwrapper : PackageConfig
     {
