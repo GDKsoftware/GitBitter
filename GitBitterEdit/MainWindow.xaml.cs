@@ -148,5 +148,21 @@ namespace GitBitterEdit
                 MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
             }
         }
+
+        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var idx = listBox.SelectedIndex;
+            var Package = config.Settings.Packages[idx];
+
+            var form = new EditPackageDetails();
+            form.Owner = this;
+            form.SetObject(Package);
+            if (form.ShowDialog() == true)
+            {
+                config.Save();
+
+                RefreshPackageSettings();
+            }
+        }
     }
 }
