@@ -96,7 +96,6 @@
     <Compile Include="Implementations\GitFilesAndFoldersWindows.cs" />
     <Compile Include="Implementations\GitHubLister.cs" />
     <Compile Include="Interfaces\ICloner.cs" />
-    <Compile Include="Implementations\GitCmdCloner.cs" />
     <Compile Include="Implementations\GitSharpCloner.cs" />
     <Compile Include="Implementations\IniFileWindows.cs" />
     <Compile Include="Interfaces\ICredentialManager.cs" />
