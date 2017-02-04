@@ -9,6 +9,9 @@
         static void Main(string[] args)
         {
             GitBitterContainer.Default.RegisterType<ICloner, GitSharpCloner>();
+            GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerWindows>();
+            GitBitterContainer.Default.RegisterType<IIniFile, IniFileWindows>();
+            GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersWindows>();
 
             try
             {

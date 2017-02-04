@@ -10,11 +10,11 @@
     /// https://gist.github.com/meziantou/10311113
     /// Edited to use SecureString where possible, removed enumerate
     /// </summary>
-    public static class CredentialManager
+    public class CredentialManagerWindows : ICredentialManager
     {
         private static readonly int MaximumCredentialBlobSize = 100;
 
-        public static Credential ReadCredential(string applicationName)
+        public Credential ReadCredential(string applicationName)
         {
             IntPtr credPtr;
             bool read = CredRead(applicationName, CredentialType.Generic, 0, out credPtr);
@@ -40,7 +40,7 @@
             return new Credential(credential.Type, applicationName, userName, secret);
         }
 
-        public static int WriteCredential(string applicationName, SecureString userName, SecureString password)
+        public int WriteCredential(string applicationName, SecureString userName, SecureString password)
         {
             if (string.IsNullOrEmpty(applicationName))
             {
@@ -150,59 +150,6 @@
 
                 return false;
             }
-        }
-    }
-
-    public enum CredentialType
-    {
-        Generic = 1,
-        DomainPassword,
-        DomainCertificate,
-        DomainVisiblePassword,
-        GenericCertificate,
-        DomainExtended,
-        Maximum,
-        MaximumEx = Maximum + 1000,
-    }
-
-    public class Credential
-    {
-        private readonly string applicationName;
-        private readonly string userName;
-        private readonly SecureString password;
-        private readonly CredentialType credentialType;
-
-        public CredentialType CredentialType
-        {
-            get { return credentialType; }
-        }
-
-        public string ApplicationName
-        {
-            get { return applicationName; }
-        }
-
-        public string UserName
-        {
-            get { return userName; }
-        }
-
-        public SecureString Password
-        {
-            get { return password; }
-        }
-
-        public Credential(CredentialType credentialType, string applicationName, string userName, SecureString password)
-        {
-            this.applicationName = applicationName;
-            this.userName = userName;
-            this.password = password;
-            this.credentialType = credentialType;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("CredentialType: {0}, ApplicationName: {1}, UserName: {2}, Password: {3}", CredentialType, ApplicationName, UserName, Password);
         }
     }
 }

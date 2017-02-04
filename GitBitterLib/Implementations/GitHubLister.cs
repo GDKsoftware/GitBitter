@@ -1,6 +1,7 @@
 ﻿namespace GitBitterLib
 {
     using System.Collections.Generic;
+    using Microsoft.Practices.Unity;
     using Octokit;
 
     public class GitHubLister : IBitterRepositoryLister
@@ -16,15 +17,17 @@
         /// <returns></returns>
         protected bool Login()
         {
-            var cred = CredentialManager.ReadCredential(AppName);
+            ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
+            var cred = credmanager.ReadCredential(AppName);
             while (cred == null)
             {
-                var promptedcredentials = CredentialUI.PromptForCredentialsWithSecureString(AppName, "GitBitter", "Please enter your GitHub login credentials");
+                ICredentialUI credUI = GitBitterContainer.Default.Resolve<ICredentialUI>();
+                var promptedcredentials = credUI.PromptForCredentialsWithSecureString(AppName, "GitBitter", "Please enter your GitHub login credentials");
                 if (promptedcredentials != null)
                 {
-                    CredentialManager.WriteCredential(AppName, promptedcredentials.UserName, promptedcredentials.Password);
+                    credmanager.WriteCredential(AppName, promptedcredentials.UserName, promptedcredentials.Password);
 
-                    cred = CredentialManager.ReadCredential(AppName);
+                    cred = credmanager.ReadCredential(AppName);
                 }
                 else
                 {

@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using LibGit2Sharp;
     using LibGit2Sharp.Handlers;
+    using Microsoft.Practices.Unity;
 
     public class GitSharpCloner : ICloner
     {
@@ -58,16 +59,17 @@
 
         private CredentialsHandler GetCredentialHandler(string repository)
         {
+            ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
             var credentials = new SecureUsernamePasswordCredentials();
             if (repository.Contains("bitbucket"))
             {
-                var cred = CredentialManager.ReadCredential(AppNameBitbucket);
+                var cred = credmanager.ReadCredential(AppNameBitbucket);
                 credentials.Username = cred.UserName;
                 credentials.Password = cred.Password;
             }
             else if (repository.Contains("github"))
             {
-                var cred = CredentialManager.ReadCredential(AppNameGithub);
+                var cred = credmanager.ReadCredential(AppNameGithub);
                 credentials.Username = cred.UserName;
                 credentials.Password = cred.Password;
             }

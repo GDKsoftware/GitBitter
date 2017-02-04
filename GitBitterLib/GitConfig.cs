@@ -1,7 +1,6 @@
 ﻿namespace GitBitterLib
 {
-    using System;
-    using System.IO;
+    using Microsoft.Practices.Unity;
 
     public class GitConfig
     {
@@ -18,20 +17,16 @@
 
         protected void LoadConfigFile()
         {
-            var ini = new IniFile(filepath);
+            var ini = GitBitterContainer.Default.Resolve<IIniFile>();
+            ini.SetFile(filepath);
             UserName = ini.IniReadValue("user", "name");
             UserEmail = ini.IniReadValue("user", "email");
         }
 
         protected void DetermineFilepath()
         {
-            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
-            if (Environment.OSVersion.Version.Major >= 6)
-            {
-                path = Directory.GetParent(path).ToString();
-            }
-
-            filepath = Path.Combine(path, ".gitconfig");
+            var filesandfolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
+            filepath = filesandfolders.UserDotGitConfig();
         }
     }
 }

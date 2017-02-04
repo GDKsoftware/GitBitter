@@ -85,17 +85,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitbucketLister.cs" />
-    <Compile Include="CredentialManager.cs" />
-    <Compile Include="CredentialUI.cs" />
+    <Compile Include="Implementations\BitbucketLister.cs" />
+    <Compile Include="PromptCredentials.cs" />
+    <Compile Include="Credential.cs" />
+    <Compile Include="Implementations\CredentialManagerPlainText.cs" />
+    <Compile Include="Implementations\CredentialManagerWindows.cs" />
+    <Compile Include="Implementations\CredentialUI.cs" />
     <Compile Include="GitBitterContainer.cs" />
     <Compile Include="GitConfig.cs" />
-    <Compile Include="GitHubLister.cs" />
-    <Compile Include="ICloner.cs" />
-    <Compile Include="GitCmdCloner.cs" />
-    <Compile Include="GitSharpCloner.cs" />
-    <Compile Include="IniFile.cs" />
-    <Compile Include="IRepositoryLister.cs" />
+    <Compile Include="Implementations\GitFilesAndFoldersWindows.cs" />
+    <Compile Include="Implementations\GitHubLister.cs" />
+    <Compile Include="Interfaces\ICloner.cs" />
+    <Compile Include="Implementations\GitCmdCloner.cs" />
+    <Compile Include="Implementations\GitSharpCloner.cs" />
+    <Compile Include="Implementations\IniFileWindows.cs" />
+    <Compile Include="Interfaces\ICredentialManager.cs" />
+    <Compile Include="Interfaces\ICredentialUI.cs" />
+    <Compile Include="Interfaces\IGitFilesAndFolders.cs" />
+    <Compile Include="Interfaces\IIniFile.cs" />
+    <Compile Include="Interfaces\IRepositoryLister.cs" />
     <Compile Include="PackageConfig.cs" />
     <Compile Include="PackageSettings.cs" />
     <Compile Include="PackageUnwrapper.cs" />

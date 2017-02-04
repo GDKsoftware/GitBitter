@@ -8,7 +8,7 @@
     /// Create a New INI file to store or load data
     /// source: https://www.codeproject.com/Articles/1966/An-INI-file-handling-class-using-C
     /// </summary>
-    public class IniFile
+    public class IniFileWindows : IIniFile
     {
         public string Path;
 
@@ -21,10 +21,9 @@
         /// <summary>
         /// INIFile Constructor.
         /// </summary>
-        /// <PARAM name="inipath"></PARAM>
-        public IniFile(string inipath)
+        public IniFileWindows()
         {
-            Path = inipath;
+            Path = string.Empty;
         }
 
         /// <summary>
@@ -53,6 +52,11 @@
             StringBuilder temp = new StringBuilder(255);
             int i = GetPrivateProfileString(section, key, string.Empty, temp, 255, this.Path);
             return temp.ToString();
+        }
+
+        public void SetFile(string filepath)
+        {
+            Path = filepath;
         }
     }
 }
