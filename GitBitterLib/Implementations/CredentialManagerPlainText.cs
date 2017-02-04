@@ -12,12 +12,6 @@
             DetermineFilepath();
         }
 
-        private void DetermineFilepath()
-        {
-            IGitFilesAndFolders filesandfolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
-            filepath = filesandfolders.UserDotCredentials();
-        }
-
         public Credential ReadCredential(string applicationName)
         {
             IIniFile ini = GitBitterContainer.Default.Resolve<IIniFile>(filepath);
@@ -41,6 +35,12 @@
             ini.IniWriteValue(applicationName, "password", password.ToInSecureString());
 
             return 0;
+        }
+
+        private void DetermineFilepath()
+        {
+            IGitFilesAndFolders filesandfolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
+            filepath = filesandfolders.UserDotCredentials();
         }
     }
 }

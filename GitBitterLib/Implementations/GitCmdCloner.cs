@@ -13,36 +13,6 @@
             gitCommand = "git";
         }
 
-        private Process AsyncExec(string filename, string arguments, string workingdirectory)
-        {
-            var info = new ProcessStartInfo();
-            info.FileName = gitCommand;
-            info.Arguments = arguments;
-            info.WindowStyle = ProcessWindowStyle.Hidden;
-            info.UseShellExecute = false;
-            if (workingdirectory != string.Empty)
-            {
-                info.WorkingDirectory = workingdirectory;
-            }
-
-            var p = Process.Start(info);
-
-            p.WaitForExit();
-
-            return p;
-        }
-
-        private void SyncExec(string filename, string arguments, string workingdirectory)
-        {
-            AsyncExec(filename, arguments, workingdirectory).WaitForExit();
-        }
-
-        private string GetDestinationFolder(string rootdir, string repodir)
-        {
-            var path = Path.Combine(rootdir, repodir);
-            return path;
-        }
-
         public Task Clone(string repository, string rootdir, string repodir, string branch)
         {
             var task = new Task(() =>
@@ -71,6 +41,36 @@
             task.Start();
 
             return task;
+        }
+
+        private Process AsyncExec(string filename, string arguments, string workingdirectory)
+        {
+            var info = new ProcessStartInfo();
+            info.FileName = gitCommand;
+            info.Arguments = arguments;
+            info.WindowStyle = ProcessWindowStyle.Hidden;
+            info.UseShellExecute = false;
+            if (workingdirectory != string.Empty)
+            {
+                info.WorkingDirectory = workingdirectory;
+            }
+
+            var p = Process.Start(info);
+
+            p.WaitForExit();
+
+            return p;
+        }
+
+        private void SyncExec(string filename, string arguments, string workingdirectory)
+        {
+            AsyncExec(filename, arguments, workingdirectory).WaitForExit();
+        }
+
+        private string GetDestinationFolder(string rootdir, string repodir)
+        {
+            var path = Path.Combine(rootdir, repodir);
+            return path;
         }
     }
 }

@@ -9,35 +9,6 @@
         public PackageSettings Settings = null;
         public string Filename = string.Empty;
 
-        protected void LoadFromFile()
-        {
-            var file = File.OpenText(Filename);
-            try
-            {
-                var serializer = new JsonSerializer();
-                Settings = (PackageSettings)serializer.Deserialize(file, typeof(PackageSettings));
-            }
-            finally
-            {
-                file.Close();
-            }
-        }
-
-        protected bool CanBeOpened()
-        {
-            try
-            {
-                var file = File.Open(Filename, FileMode.Open, FileAccess.Write);
-                file.Close();
-
-                return true;
-            }
-            catch (System.Exception)
-            {
-                return false;
-            }
-        }
-
         public PackageConfig(string packageSettingsFile)
         {
             if (!File.Exists(packageSettingsFile))
@@ -81,6 +52,35 @@
             finally
             {
                 file.Close();
+            }
+        }
+
+        private void LoadFromFile()
+        {
+            var file = File.OpenText(Filename);
+            try
+            {
+                var serializer = new JsonSerializer();
+                Settings = (PackageSettings)serializer.Deserialize(file, typeof(PackageSettings));
+            }
+            finally
+            {
+                file.Close();
+            }
+        }
+
+        private bool CanBeOpened()
+        {
+            try
+            {
+                var file = File.Open(Filename, FileMode.Open, FileAccess.Write);
+                file.Close();
+
+                return true;
+            }
+            catch (System.Exception)
+            {
+                return false;
             }
         }
     }

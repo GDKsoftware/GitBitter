@@ -11,36 +11,6 @@
         private GitHubClient github;
         private string username;
 
-        /// <summary>
-        /// Currently just for setting up login credentials
-        /// </summary>
-        /// <returns></returns>
-        protected bool Login()
-        {
-            ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
-            var cred = credmanager.ReadCredential(AppName);
-            while (cred == null)
-            {
-                ICredentialUI credUI = GitBitterContainer.Default.Resolve<ICredentialUI>();
-                var promptedcredentials = credUI.PromptForCredentialsWithSecureString(AppName, "GitBitter", "Please enter your GitHub login credentials");
-                if (promptedcredentials != null)
-                {
-                    credmanager.WriteCredential(AppName, promptedcredentials.UserName, promptedcredentials.Password);
-
-                    cred = credmanager.ReadCredential(AppName);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            username = cred.UserName;
-            cred = null;
-
-            return true;
-        }
-
         public List<RepositoryDescription> GetRepositories(string team)
         {
             github = new GitHubClient(new ProductHeaderValue("GitBitter"));
@@ -65,6 +35,36 @@
             }
 
             return lstRepos;
+        }
+
+        /// <summary>
+        /// Currently just for setting up login credentials
+        /// </summary>
+        /// <returns></returns>
+        private bool Login()
+        {
+            ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
+            var cred = credmanager.ReadCredential(AppName);
+            while (cred == null)
+            {
+                ICredentialUI credUI = GitBitterContainer.Default.Resolve<ICredentialUI>();
+                var promptedcredentials = credUI.PromptForCredentialsWithSecureString(AppName, "GitBitter", "Please enter your GitHub login credentials");
+                if (promptedcredentials != null)
+                {
+                    credmanager.WriteCredential(AppName, promptedcredentials.UserName, promptedcredentials.Password);
+
+                    cred = credmanager.ReadCredential(AppName);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            username = cred.UserName;
+            cred = null;
+
+            return true;
         }
     }
 }

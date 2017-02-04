@@ -2,6 +2,11 @@
 {
     using System.Collections.Generic;
 
+    public interface IBitterRepositoryLister
+    {
+        List<RepositoryDescription> GetRepositories(string team);
+    }
+
     public class RepositoryDescription
     {
         public string Name { get; set; }
@@ -11,10 +16,5 @@
         public string Description { get; set; }
 
         public string DefaultBranch { get; set; }
-    }
-
-    public interface IBitterRepositoryLister
-    {
-        List<RepositoryDescription> GetRepositories(string team);
     }
 }

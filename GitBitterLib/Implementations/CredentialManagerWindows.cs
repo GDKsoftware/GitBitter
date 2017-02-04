@@ -14,6 +14,13 @@
     {
         private static readonly int MaximumCredentialBlobSize = 100;
 
+        private enum CredentialPersistence : uint
+        {
+            Session = 1,
+            LocalMachine,
+            Enterprise
+        }
+
         public Credential ReadCredential(string applicationName)
         {
             IntPtr credPtr;
@@ -28,16 +35,6 @@
             }
 
             return null;
-        }
-
-        private static Credential ReadCredential(CREDENTIAL credential)
-        {
-            string applicationName = Marshal.PtrToStringUni(credential.TargetName);
-            string userName = Marshal.PtrToStringUni(credential.UserName);
-
-            var secret = SecureStringHelper.PtrToSecureString(credential.CredentialBlob, (int)credential.CredentialBlobSize / 2);
-
-            return new Credential(credential.Type, applicationName, userName, secret);
         }
 
         public int WriteCredential(string applicationName, SecureString userName, SecureString password)
@@ -87,7 +84,17 @@
 
             return 0;
         }
-        
+
+        private static Credential ReadCredential(CREDENTIAL credential)
+        {
+            string applicationName = Marshal.PtrToStringUni(credential.TargetName);
+            string userName = Marshal.PtrToStringUni(credential.UserName);
+
+            var secret = SecureStringHelper.PtrToSecureString(credential.CredentialBlob, (int)credential.CredentialBlobSize / 2);
+
+            return new Credential(credential.Type, applicationName, userName, secret);
+        }
+
         [DllImport("Advapi32.dll", EntryPoint = "CredReadW", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool CredRead(string target, CredentialType type, int reservedFlag, out IntPtr credentialPtr);
 
@@ -96,13 +103,6 @@
 
         [DllImport("Advapi32.dll", EntryPoint = "CredFree", SetLastError = true)]
         private static extern bool CredFree([In] IntPtr cred);
-
-        private enum CredentialPersistence : uint
-        {
-            Session = 1,
-            LocalMachine,
-            Enterprise
-        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct CREDENTIAL

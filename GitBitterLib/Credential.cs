@@ -21,6 +21,14 @@
         private readonly SecureString password;
         private readonly CredentialType credentialType;
 
+        public Credential(CredentialType credentialType, string applicationName, string userName, SecureString password)
+        {
+            this.applicationName = applicationName;
+            this.userName = userName;
+            this.password = password;
+            this.credentialType = credentialType;
+        }
+
         public CredentialType CredentialType
         {
             get { return credentialType; }
@@ -39,14 +47,6 @@
         public SecureString Password
         {
             get { return password; }
-        }
-
-        public Credential(CredentialType credentialType, string applicationName, string userName, SecureString password)
-        {
-            this.applicationName = applicationName;
-            this.userName = userName;
-            this.password = password;
-            this.credentialType = credentialType;
         }
 
         public override string ToString()

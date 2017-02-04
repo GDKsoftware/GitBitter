@@ -42,28 +42,28 @@ namespace GitBitterEdit
             var args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
             {
-                this.config = new PackageConfig(args[1]);
+                config = new PackageConfig(args[1]);
             }
             else
             {
-                this.config = new PackageConfig(Path.Combine(settingsPath, "gitbitter.json"));
+                config = new PackageConfig(Path.Combine(settingsPath, "gitbitter.json"));
             }
 
-            this.RefreshPackageSettings();
+            RefreshPackageSettings();
         }
 
         private void RefreshPackageSettings()
         {
-            listBox.ItemsSource = from package in this.config.Settings.Packages
+            listBox.ItemsSource = from package in config.Settings.Packages
                                   select package.Folder + " (" + package.Branch + ") <" + package.Repository + ">";
         }
         
         private void btnUpdateAll_Click(object sender, RoutedEventArgs e)
         {
-            this.Cursor = Cursors.Wait;
+            Cursor = Cursors.Wait;
             try
             {
-                var cloner = new PackageUnwrapper(this.config.Filename);
+                var cloner = new PackageUnwrapper(config.Filename);
                 try
                 {
                     cloner.StartAndWaitForUnwrapping();
@@ -75,13 +75,13 @@ namespace GitBitterEdit
             }
             finally
             {
-                this.Cursor = Cursors.Arrow;
+                Cursor = Cursors.Arrow;
             }
         }
 
         private void miExit_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void btnAddFromBitBucket_Click(object sender, RoutedEventArgs e)
@@ -98,7 +98,7 @@ namespace GitBitterEdit
                     var repo = select.SelectRepository;
                     if (repo != null)
                     {
-                        this.AddPackage(repo);
+                        AddPackage(repo);
                     }
                 }
             }
@@ -113,14 +113,14 @@ namespace GitBitterEdit
             var package = new Package();
             package.Repository = repo.URL;
             package.Folder = repo.Name;
-            if (!string.IsNullOrEmpty(repo.DefaultBranch))
+            if (!String.IsNullOrEmpty(repo.DefaultBranch))
             {
                 package.Branch = repo.DefaultBranch;
             }
 
-            this.config.Settings.Packages.Add(package);
+            config.Settings.Packages.Add(package);
 
-            this.config.Save();
+            config.Save();
 
             RefreshPackageSettings();
         }
@@ -139,7 +139,7 @@ namespace GitBitterEdit
                     var repo = select.SelectRepository;
                     if (repo != null)
                     {
-                        this.AddPackage(repo);
+                        AddPackage(repo);
                     }
                 }
             }
@@ -151,6 +151,13 @@ namespace GitBitterEdit
             {
                 MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
             }
+        }
+
+        private void btnGitConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var frm = new GitConfigEdit();
+            frm.Owner = this;
+            frm.ShowDialog();
         }
     }
 }

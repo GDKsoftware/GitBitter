@@ -11,7 +11,31 @@
         private SharpBucketV2 sharpBucket;
         private string username;
 
-        protected bool Login()
+        public List<RepositoryDescription> GetRepositories(string team)
+        {
+            var repositories = new List<RepositoryDescription>();
+
+            sharpBucket = new SharpBucketV2();
+            if (Login())
+            {
+                var repoEndPoint = sharpBucket.RepositoriesEndPoint();
+
+                var teamRepositories = repoEndPoint.ListRepositories(team);
+                foreach (var project in teamRepositories)
+                {
+                    var listerProject = new RepositoryDescription();
+                    listerProject.Name = project.name;
+                    listerProject.Description = project.description;
+                    listerProject.URL = GetPreferredLinkFromRepo(project);
+
+                    repositories.Add(listerProject);
+                }
+            }
+
+            return repositories;
+        }
+
+        private bool Login()
         {
             ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
             var cred = credmanager.ReadCredential(AppName);
@@ -56,30 +80,6 @@
             }
 
             return url;
-        }
-
-        public List<RepositoryDescription> GetRepositories(string team)
-        {
-            var repositories = new List<RepositoryDescription>();
-
-            sharpBucket = new SharpBucketV2();
-            if (Login())
-            {
-                var repoEndPoint = sharpBucket.RepositoriesEndPoint();
-
-                var teamRepositories = repoEndPoint.ListRepositories(team);
-                foreach (var project in teamRepositories)
-                {
-                    var listerProject = new RepositoryDescription();
-                    listerProject.Name = project.name;
-                    listerProject.Description = project.description;
-                    listerProject.URL = GetPreferredLinkFromRepo(project);
-
-                    repositories.Add(listerProject);
-                }
-            }
-
-            return repositories;
         }
     }
 }

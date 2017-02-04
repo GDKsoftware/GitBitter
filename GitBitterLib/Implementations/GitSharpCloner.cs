@@ -12,33 +12,19 @@
         private const string AppNameBitbucket = "gitbitter:bitbucket";
         private const string AppNameGithub = "gitbitter:github";
         private Identity identity;
+        private bool useSSH = false;
 
         public GitSharpCloner()
         {
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
             var gitConfig = new GitConfig();
+
             identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
-        }
-
-        protected string GetIdRSAFilepath()
-        {
-            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
-            if (Environment.OSVersion.Version.Major >= 6)
-            {
-                path = Directory.GetParent(path).ToString();
-            }
-
-            return Path.Combine(path, ".ssh/id_rsa");
-        }
-
-        protected string GetPublicKeyFilepath()
-        {
-            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
-            if (Environment.OSVersion.Version.Major >= 6)
-            {
-                path = Directory.GetParent(path).ToString();
-            }
-
-            return Path.Combine(path, ".ssh/id_rsa.pub");
+            useSSH = gitConfig.UseSSH;
         }
 
         public Task Clone(string repository, string rootdir, string repodir, string branch)
@@ -46,13 +32,62 @@
             return CloneBitBucketRepo(repository, rootdir, repodir, branch);
         }
 
+        public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branch)
+        {
+            var task = new Task(() =>
+            {
+                var fullRepoPath = Path.Combine(rootdir, repodir);
+
+                string url = repository;
+                if (useSSH)
+                {
+                    url = repository.Replace("https://", "ssh://git@");
+                }
+
+                var options = new PullOptions();
+                options.FetchOptions = new FetchOptions();
+
+                if (useSSH)
+                {
+                    options.FetchOptions.CredentialsProvider = GetCredentialHandlerSSH(repository);
+                }
+                else
+                {
+                    options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
+                }
+
+                var sig = new Signature(identity, DateTime.Now);
+
+                var repo = new Repository(fullRepoPath);
+                repo.Reset(ResetMode.Hard);
+
+                Commands.Pull(repo, sig, options);
+
+                Commands.Checkout(repo, branch);
+            });
+            task.Start();
+            return task;
+        }
+
         private CredentialsHandler GetCredentialHandlerSSH(string repository)
         {
+            var filesAndFolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
+
             var credentials = new SshUserKeyCredentials();
             credentials.Username = "git";
-            credentials.Passphrase = "";
-            credentials.PrivateKey = GetIdRSAFilepath();
-            credentials.PublicKey = GetPublicKeyFilepath();
+            credentials.Passphrase = string.Empty;
+            credentials.PrivateKey = filesAndFolders.SSHPrivateKeyFile();
+            credentials.PublicKey = filesAndFolders.SSHPublicKeyFile();
+
+            if (!File.Exists(credentials.PrivateKey))
+            {
+                throw new FileNotFoundException("Private key not found @ " + credentials.PrivateKey);
+            }
+
+            if (!File.Exists(credentials.PublicKey))
+            {
+                throw new FileNotFoundException("Public key not found @ " + credentials.PublicKey);
+            }
 
             return (_url, _user, _cred) => credentials;
         }
@@ -83,7 +118,14 @@
             options.BranchName = branch;
             options.Checkout = true;
 
-            options.CredentialsProvider = GetCredentialHandlerSSH(repository);
+            if (useSSH)
+            {
+                options.CredentialsProvider = GetCredentialHandlerSSH(repository);
+            }
+            else
+            {
+                options.CredentialsProvider = GetCredentialHandler(repository);
+            }
 
             return options;
         }
@@ -92,36 +134,16 @@
         {
             var task = new Task(() =>
             {
-                var url = repository.Replace("https://", "ssh://git@");
+                string url = repository;
+                if (useSSH)
+                {
+                    url = repository.Replace("https://", "ssh://git@");
+                }
+
                 var options = GetCloneOptions(url, branch);
                 var fullRepoPath = Path.Combine(rootdir, repodir);
 
                 Repository.Clone(url, fullRepoPath, options);
-            });
-            task.Start();
-            return task;
-        }
-
-        public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branch)
-        {
-            var task = new Task(() =>
-            {
-                var fullRepoPath = Path.Combine(rootdir, repodir);
-
-                var url = repository.Replace("https://", "ssh://git@");
-
-                var options = new PullOptions();
-                options.FetchOptions = new FetchOptions();
-                options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
-
-                var sig = new Signature(identity, DateTime.Now);
-
-                var repo = new Repository(fullRepoPath);
-                repo.Reset(ResetMode.Hard);
-
-                Commands.Pull(repo, sig, options);
-
-                Commands.Checkout(repo, branch);
             });
             task.Start();
             return task;
