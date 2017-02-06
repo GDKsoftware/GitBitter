@@ -1,0 +1,8 @@
+language: csharp
+solution: GitBitter.sln
+install:
+  - nuget restore GitBitter.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release /p:DynamicConstants=MONO GitBitter.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./GitBitterTest/bin/Release/GitBitterTest.dll
