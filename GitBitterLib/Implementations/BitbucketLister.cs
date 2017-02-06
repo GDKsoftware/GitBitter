@@ -11,6 +11,10 @@
         private SharpBucketV2 sharpBucket;
         private string username;
 
+        public BitbucketLister()
+        {
+        }
+
         public List<RepositoryDescription> GetRepositories(string team)
         {
             var repositories = new List<RepositoryDescription>();

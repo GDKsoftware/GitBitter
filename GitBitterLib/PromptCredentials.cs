@@ -11,5 +11,15 @@
         public SecureString Password { get; internal set; }
 
         public bool IsSaveChecked { get; set; }
+
+        public PromptCredentials()
+        {
+        }
+
+        public PromptCredentials(SecureString UserName, SecureString Password)
+        {
+            this.UserName = UserName;
+            this.Password = Password;
+        }
     }
 }
