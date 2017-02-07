@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26127.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitBitterEdit", "GitBitterEdit\GitBitterEdit.csproj", "{159601D0-8D50-451F-AB4A-E2FE8E89314C}"
 EndProject
@@ -17,23 +17,31 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		MonoRelease|Any CPU = MonoRelease|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{159601D0-8D50-451F-AB4A-E2FE8E89314C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{159601D0-8D50-451F-AB4A-E2FE8E89314C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{159601D0-8D50-451F-AB4A-E2FE8E89314C}.MonoRelease|Any CPU.ActiveCfg = MonoRelease|Any CPU
 		{159601D0-8D50-451F-AB4A-E2FE8E89314C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{159601D0-8D50-451F-AB4A-E2FE8E89314C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2434B48E-35C7-4339-A62F-6E295EA5F41F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2434B48E-35C7-4339-A62F-6E295EA5F41F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2434B48E-35C7-4339-A62F-6E295EA5F41F}.MonoRelease|Any CPU.ActiveCfg = MonoRelease|Any CPU
+		{2434B48E-35C7-4339-A62F-6E295EA5F41F}.MonoRelease|Any CPU.Build.0 = MonoRelease|Any CPU
 		{2434B48E-35C7-4339-A62F-6E295EA5F41F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2434B48E-35C7-4339-A62F-6E295EA5F41F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.MonoRelease|Any CPU.ActiveCfg = MonoRelease|Any CPU
+		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.MonoRelease|Any CPU.Build.0 = MonoRelease|Any CPU
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D3C6F6E-D159-4C7D-88E2-362C3EA0F207}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9C773588-7AED-47CF-8411-3995D4C515D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C773588-7AED-47CF-8411-3995D4C515D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C773588-7AED-47CF-8411-3995D4C515D7}.MonoRelease|Any CPU.ActiveCfg = MonoRelease|Any CPU
+		{9C773588-7AED-47CF-8411-3995D4C515D7}.MonoRelease|Any CPU.Build.0 = MonoRelease|Any CPU
 		{9C773588-7AED-47CF-8411-3995D4C515D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C773588-7AED-47CF-8411-3995D4C515D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
