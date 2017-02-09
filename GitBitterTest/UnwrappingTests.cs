@@ -5,13 +5,21 @@
     using System.Threading.Tasks;
     using GitBitterLib;
     using Microsoft.Practices.Unity;
+
+#if MONO
+    using NUnit.Framework;
+#else
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using TestFixture = Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute;
+    using Test = Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute;
+#endif
+
     using Moq;
 
-    [TestClass]
+    [TestFixture]
     public class UnwrappingTests
     {
-        [TestMethod]
+        [Test]
         public void BasicPackageUnwrapping()
         {
             var currentWorkdirectory = Path.GetDirectoryName(Path.GetFullPath("gitbitter.json"));

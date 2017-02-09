@@ -26,7 +26,7 @@ namespace GitBitterLib
     /// Console.WriteLine("DomainName: {0}", credentials2.DomainName);
     /// Console.WriteLine("Password: {0}", credentials2.Password);
     /// </example>
-    public static class CredentialUI
+    public class CredentialUIWindows : ICredentialUI
     {
         /// <summary>
         /// Show dialog box for generic credential.
@@ -34,7 +34,7 @@ namespace GitBitterLib
         /// <param name="caption"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptWithSecureString(string caption, string message)
+        public static PromptCredentials PromptWithSecureString(string caption, string message)
         {
             return PromptWithSecureString(caption, message, IntPtr.Zero);
         }
@@ -46,7 +46,7 @@ namespace GitBitterLib
         /// <param name="message"></param>
         /// <param name="hwndParent"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptWithSecureString(string caption, string message, IntPtr hwndParent)
+        public static PromptCredentials PromptWithSecureString(string caption, string message, IntPtr hwndParent)
         {
             return PromptWithSecureString(caption, message, IntPtr.Zero, null, null);
         }
@@ -59,7 +59,7 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptWithSecureString(string caption, string message, SecureString userName, SecureString password)
+        public static PromptCredentials PromptWithSecureString(string caption, string message, SecureString userName, SecureString password)
         {
             return PromptWithSecureString(caption, message, IntPtr.Zero, userName, password);
         }
@@ -73,7 +73,7 @@ namespace GitBitterLib
         /// <param name="password"></param>
         /// <param name="hwndParent"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptWithSecureString(string caption, string message, IntPtr hwndParent, SecureString userName, SecureString password)
+        public static PromptCredentials PromptWithSecureString(string caption, string message, IntPtr hwndParent, SecureString userName, SecureString password)
         {
             if (Environment.OSVersion.Version.Major >= 6)
             {
@@ -94,7 +94,7 @@ namespace GitBitterLib
         /// <param name="caption"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForWindowsCredentialsWithSecureString(string caption, string message)
+        public static PromptCredentials PromptForWindowsCredentialsWithSecureString(string caption, string message)
         {
             return PromptForWindowsCredentialsWithSecureString(caption, message, IntPtr.Zero, null, null);
         }
@@ -106,7 +106,7 @@ namespace GitBitterLib
         /// <param name="message"></param>
         /// <param name="hwndParent"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForWindowsCredentialsWithSecureString(string caption, string message, IntPtr hwndParent)
+        public static PromptCredentials PromptForWindowsCredentialsWithSecureString(string caption, string message, IntPtr hwndParent)
         {
             return PromptForWindowsCredentialsWithSecureString(caption, message, hwndParent, null, null);
         }
@@ -119,7 +119,7 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForWindowsCredentialsWithSecureString(string caption, string message, SecureString userName, SecureString password)
+        public static PromptCredentials PromptForWindowsCredentialsWithSecureString(string caption, string message, SecureString userName, SecureString password)
         {
             return PromptForWindowsCredentialsWithSecureString(caption, message, IntPtr.Zero, userName, password);
         }
@@ -133,7 +133,7 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForWindowsCredentialsWithSecureString(string caption, string message, IntPtr hwndParent, SecureString userName, SecureString password)
+        public static PromptCredentials PromptForWindowsCredentialsWithSecureString(string caption, string message, IntPtr hwndParent, SecureString userName, SecureString password)
         {
             PromptForWindowsCredentialsOptions options = new PromptForWindowsCredentialsOptions(caption, message)
             {
@@ -150,12 +150,12 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForWindowsCredentialsWithSecureString(PromptForWindowsCredentialsOptions options, SecureString userName, SecureString password)
+        public static PromptCredentials PromptForWindowsCredentialsWithSecureString(PromptForWindowsCredentialsOptions options, SecureString userName, SecureString password)
         {
             return PromptForWindowsCredentialsInternal(options, userName, password);
         }
 
-        private static PromptCredentialsSecureStringResult PromptForWindowsCredentialsInternal(PromptForWindowsCredentialsOptions options, SecureString userName, SecureString password)
+        private static PromptCredentials PromptForWindowsCredentialsInternal(PromptForWindowsCredentialsOptions options, SecureString userName, SecureString password)
         {
             NativeMethods.CREDUI_INFO creduiInfo = new NativeMethods.CREDUI_INFO()
             {
@@ -275,7 +275,7 @@ namespace GitBitterLib
         /// <param name="caption"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForCredentialsWithSecureString(string targetName, string caption, string message)
+        public PromptCredentials PromptForCredentialsWithSecureString(string targetName, string caption, string message)
         {
             return PromptForCredentialsWithSecureString(new PromptForCredentialsOptions(targetName, caption, message));
         }
@@ -288,7 +288,7 @@ namespace GitBitterLib
         /// <param name="message"></param>
         /// <param name="hwndParent"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForCredentialsWithSecureString(string targetName, string caption, string message, IntPtr hwndParent)
+        public static PromptCredentials PromptForCredentialsWithSecureString(string targetName, string caption, string message, IntPtr hwndParent)
         {
             return PromptForCredentialsWithSecureString(targetName, caption, message, hwndParent, null, null);
         }
@@ -302,7 +302,7 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForCredentialsWithSecureString(string targetName, string caption, string message, SecureString userName, SecureString password)
+        public static PromptCredentials PromptForCredentialsWithSecureString(string targetName, string caption, string message, SecureString userName, SecureString password)
         {
             return PromptForCredentialsWithSecureString(targetName, caption, message, IntPtr.Zero, userName, password);
         }
@@ -317,7 +317,7 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForCredentialsWithSecureString(string targetName, string caption, string message, IntPtr hwndParent, SecureString userName, SecureString password)
+        public static PromptCredentials PromptForCredentialsWithSecureString(string targetName, string caption, string message, IntPtr hwndParent, SecureString userName, SecureString password)
         {
             return PromptForCredentialsWithSecureString(new PromptForCredentialsOptions(targetName, caption, message) { HwndParent = hwndParent }, userName, password);
         }
@@ -327,7 +327,7 @@ namespace GitBitterLib
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForCredentialsWithSecureString(PromptForCredentialsOptions options)
+        public static PromptCredentials PromptForCredentialsWithSecureString(PromptForCredentialsOptions options)
         {
             return PromptForCredentialsInternal(options, null, null);
         }
@@ -339,12 +339,12 @@ namespace GitBitterLib
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static PromptCredentialsSecureStringResult PromptForCredentialsWithSecureString(PromptForCredentialsOptions options, SecureString userName, SecureString password)
+        public static PromptCredentials PromptForCredentialsWithSecureString(PromptForCredentialsOptions options, SecureString userName, SecureString password)
         {
             return PromptForCredentialsInternal(options, userName, password);
         }
 
-        private static PromptCredentialsSecureStringResult PromptForCredentialsInternal(PromptForCredentialsOptions options, SecureString userName, SecureString password)
+        private static PromptCredentials PromptForCredentialsInternal(PromptForCredentialsOptions options, SecureString userName, SecureString password)
         {
             if (options == null)
             {
@@ -426,10 +426,10 @@ namespace GitBitterLib
                         throw new Win32Exception((int)retVal);
                 }
 
-                return new PromptCredentialsSecureStringResult
+                return new PromptCredentials
                 {
-                    UserName = NativeMethods.PtrToSecureString(userNamePtr),
-                    Password = NativeMethods.PtrToSecureString(passwordPtr),
+                    UserName = SecureStringHelper.PtrToSecureString(userNamePtr),
+                    Password = SecureStringHelper.PtrToSecureString(passwordPtr),
                     IsSaveChecked = save
                 };
             }
@@ -782,7 +782,7 @@ namespace GitBitterLib
                 IntPtr pszPassword,
                 ref int pcchMaxPassword);
             
-            public static PromptCredentialsSecureStringResult CredUnPackAuthenticationBufferWrapSecureString(bool decryptProtectedCredentials, IntPtr authBufferPtr, int authBufferSize)
+            public static PromptCredentials CredUnPackAuthenticationBufferWrapSecureString(bool decryptProtectedCredentials, IntPtr authBufferPtr, int authBufferSize)
             {
                 int userNameSize = 255;
                 int domainNameSize = 255;
@@ -835,11 +835,11 @@ namespace GitBitterLib
                         }
                     }
 
-                    return new PromptCredentialsSecureStringResult
+                    return new PromptCredentials
                     {
-                        UserName = PtrToSecureString(userNamePtr, userNameSize),
-                        DomainName = PtrToSecureString(domainNamePtr, domainNameSize),
-                        Password = PtrToSecureString(passwordPtr, passwordSize)
+                        UserName = SecureStringHelper.PtrToSecureString(userNamePtr, userNameSize),
+                        DomainName = SecureStringHelper.PtrToSecureString(domainNamePtr, domainNameSize),
+                        Password = SecureStringHelper.PtrToSecureString(passwordPtr, passwordSize)
                     };
                 }
                 finally
@@ -860,60 +860,6 @@ namespace GitBitterLib
                     }
                 }
             }
-
-            #region Utility Methods
-            public static SecureString PtrToSecureString(IntPtr p)
-            {
-                SecureString s = new SecureString();
-                int i = 0;
-                while (true)
-                {
-                    char c = (char)Marshal.ReadInt16(p, ((i++) * sizeof(short)));
-                    if (c == '\u0000')
-                    {
-                        break;
-                    }
-
-                    s.AppendChar(c);
-                }
-
-                s.MakeReadOnly();
-                return s;
-            }
-
-            public static SecureString PtrToSecureString(IntPtr p, int length)
-            {
-                SecureString s = new SecureString();
-                for (var i = 0; i < length; i++)
-                {
-                    s.AppendChar((char)Marshal.ReadInt16(p, i * sizeof(short)));
-                }
-
-                s.MakeReadOnly();
-                return s;
-            }
-            #endregion
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IPromptCredentialsResult
-    {
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class PromptCredentialsSecureStringResult : IPromptCredentialsResult
-    {
-        public SecureString UserName { get; internal set; }
-
-        public SecureString DomainName { get; internal set; }
-
-        public SecureString Password { get; internal set; }
-
-        public bool IsSaveChecked { get; set; }
     }
 }

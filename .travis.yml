@@ -1,0 +1,8 @@
+language: csharp
+solution: MonoBitter.sln
+install:
+  - nuget restore MonoBitter.sln
+  - nuget install NUnit.Console -Version 3.6.0 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=MonoRelease MonoBitter.sln
+  - mono ./testrunner/NUnit.ConsoleRunner.3.6.0/tools/nunit3-console.exe ./GitBitterTest/bin/MonoRelease/GitBitterTest.dll
