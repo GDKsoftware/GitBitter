@@ -38,17 +38,17 @@ namespace GitBitterEdit
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = false;
+            this.DialogResult = false;
         }
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            this.DialogResult = true;
         }
 
         private void lstRepositories_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            DialogResult = true;
+            this.DialogResult = true;
         }
     }
 }

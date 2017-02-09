@@ -33,6 +33,18 @@ namespace GitBitterEdit
 
             GitBitterContainer.Default.RegisterType<ICloner, GitSharpCloner>();
 
+#if MONO
+            GitBitterContainer.Default.RegisterType<IIniFile, IniFileMadMilkman>();
+            GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersMono>();
+            GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerPlainText>();
+            GitBitterContainer.Default.RegisterType<ICredentialUI, CredentialUIMono>();
+#else
+            GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerWindows>();
+            GitBitterContainer.Default.RegisterType<IIniFile, IniFileWindows>();
+            GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersWindows>();
+            GitBitterContainer.Default.RegisterType<ICredentialUI, CredentialUIWindows>();
+#endif
+
             settingsPath = Environment.CurrentDirectory;
 
             var args = Environment.GetCommandLineArgs();
@@ -171,6 +183,13 @@ namespace GitBitterEdit
 
                 RefreshPackageSettings();
             }
+        }
+
+        private void btnGitConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var frm = new GitConfigEdit();
+            frm.Owner = this;
+            frm.ShowDialog();
         }
     }
 }

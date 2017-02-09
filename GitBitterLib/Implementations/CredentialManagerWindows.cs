@@ -10,11 +10,18 @@
     /// https://gist.github.com/meziantou/10311113
     /// Edited to use SecureString where possible, removed enumerate
     /// </summary>
-    public static class CredentialManager
+    public class CredentialManagerWindows : ICredentialManager
     {
         private static readonly int MaximumCredentialBlobSize = 100;
 
-        public static Credential ReadCredential(string applicationName)
+        private enum CredentialPersistence : uint
+        {
+            Session = 1,
+            LocalMachine,
+            Enterprise
+        }
+
+        public Credential ReadCredential(string applicationName)
         {
             IntPtr credPtr;
             bool read = CredRead(applicationName, CredentialType.Generic, 0, out credPtr);
@@ -30,17 +37,7 @@
             return null;
         }
 
-        private static Credential ReadCredential(CREDENTIAL credential)
-        {
-            string applicationName = Marshal.PtrToStringUni(credential.TargetName);
-            string userName = Marshal.PtrToStringUni(credential.UserName);
-
-            var secret = SecureStringHelper.PtrToSecureString(credential.CredentialBlob, (int)credential.CredentialBlobSize / 2);
-
-            return new Credential(credential.Type, applicationName, userName, secret);
-        }
-
-        public static int WriteCredential(string applicationName, SecureString userName, SecureString password)
+        public int WriteCredential(string applicationName, SecureString userName, SecureString password)
         {
             if (string.IsNullOrEmpty(applicationName))
             {
@@ -87,7 +84,17 @@
 
             return 0;
         }
-        
+
+        private static Credential ReadCredential(CREDENTIAL credential)
+        {
+            string applicationName = Marshal.PtrToStringUni(credential.TargetName);
+            string userName = Marshal.PtrToStringUni(credential.UserName);
+
+            var secret = SecureStringHelper.PtrToSecureString(credential.CredentialBlob, (int)credential.CredentialBlobSize / 2);
+
+            return new Credential(credential.Type, applicationName, userName, secret);
+        }
+
         [DllImport("Advapi32.dll", EntryPoint = "CredReadW", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool CredRead(string target, CredentialType type, int reservedFlag, out IntPtr credentialPtr);
 
@@ -96,13 +103,6 @@
 
         [DllImport("Advapi32.dll", EntryPoint = "CredFree", SetLastError = true)]
         private static extern bool CredFree([In] IntPtr cred);
-
-        private enum CredentialPersistence : uint
-        {
-            Session = 1,
-            LocalMachine,
-            Enterprise
-        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct CREDENTIAL
@@ -150,59 +150,6 @@
 
                 return false;
             }
-        }
-    }
-
-    public enum CredentialType
-    {
-        Generic = 1,
-        DomainPassword,
-        DomainCertificate,
-        DomainVisiblePassword,
-        GenericCertificate,
-        DomainExtended,
-        Maximum,
-        MaximumEx = Maximum + 1000,
-    }
-
-    public class Credential
-    {
-        private readonly string applicationName;
-        private readonly string userName;
-        private readonly SecureString password;
-        private readonly CredentialType credentialType;
-
-        public CredentialType CredentialType
-        {
-            get { return credentialType; }
-        }
-
-        public string ApplicationName
-        {
-            get { return applicationName; }
-        }
-
-        public string UserName
-        {
-            get { return userName; }
-        }
-
-        public SecureString Password
-        {
-            get { return password; }
-        }
-
-        public Credential(CredentialType credentialType, string applicationName, string userName, SecureString password)
-        {
-            this.applicationName = applicationName;
-            this.userName = userName;
-            this.password = password;
-            this.credentialType = credentialType;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("CredentialType: {0}, ApplicationName: {1}, UserName: {2}, Password: {3}", CredentialType, ApplicationName, UserName, Password);
         }
     }
 }

@@ -8,23 +8,16 @@
     /// Create a New INI file to store or load data
     /// source: https://www.codeproject.com/Articles/1966/An-INI-file-handling-class-using-C
     /// </summary>
-    public class IniFile
+    public class IniFileWindows : IIniFile
     {
         public string Path;
-
-        [DllImport("kernel32")]
-        private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
-
-        [DllImport("kernel32")]
-        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
         /// <summary>
         /// INIFile Constructor.
         /// </summary>
-        /// <PARAM name="inipath"></PARAM>
-        public IniFile(string inipath)
+        public IniFileWindows()
         {
-            Path = inipath;
+            Path = string.Empty;
         }
 
         /// <summary>
@@ -54,5 +47,16 @@
             int i = GetPrivateProfileString(section, key, string.Empty, temp, 255, this.Path);
             return temp.ToString();
         }
+
+        public void SetFile(string filepath)
+        {
+            Path = filepath;
+        }
+
+        [DllImport("kernel32")]
+        private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
+
+        [DllImport("kernel32")]
+        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
     }
 }

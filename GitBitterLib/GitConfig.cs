@@ -1,37 +1,53 @@
 ﻿namespace GitBitterLib
 {
-    using System;
-    using System.IO;
+    using Microsoft.Practices.Unity;
 
     public class GitConfig
     {
-        public string UserName;
-        public string UserEmail;
+        private const string SectionGitBitter = "gitbitter";
+        private const string KeyUseSSH = "usessh";
+        private const string SectionUser = "user";
 
-        protected string filepath;
+        public string UserName { get; set; }
+
+        public string UserEmail { get; set; }
+
+        public bool UseSSH { get; set; }
 
         public GitConfig()
         {
-            DetermineFilepath();
-            LoadConfigFile();
+            LoadConfigFiles();
         }
 
-        protected void LoadConfigFile()
+        public void Save()
         {
-            var ini = new IniFile(filepath);
-            UserName = ini.IniReadValue("user", "name");
-            UserEmail = ini.IniReadValue("user", "email");
-        }
+            var filesandfolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
 
-        protected void DetermineFilepath()
-        {
-            string path = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName;
-            if (Environment.OSVersion.Version.Major >= 6)
+            var iniCredentials = GitBitterContainer.Default.Resolve<IIniFile>();
+            iniCredentials.SetFile(filesandfolders.UserDotCredentials());
+
+            if (UseSSH)
             {
-                path = Directory.GetParent(path).ToString();
+                iniCredentials.IniWriteValue(SectionGitBitter, KeyUseSSH, "true");
             }
+            else
+            {
+                iniCredentials.IniWriteValue(SectionGitBitter, KeyUseSSH, "false");
+            }
+        }
 
-            filepath = Path.Combine(path, ".gitconfig");
+        protected void LoadConfigFiles()
+        {
+            var filesandfolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
+
+            var iniGitConfig = GitBitterContainer.Default.Resolve<IIniFile>();
+            iniGitConfig.SetFile(filesandfolders.UserDotGitConfig());
+            UserName = iniGitConfig.IniReadValue(SectionUser, "name");
+            UserEmail = iniGitConfig.IniReadValue(SectionUser, "email");
+
+            var iniCredentials = GitBitterContainer.Default.Resolve<IIniFile>();
+            iniCredentials.SetFile(filesandfolders.UserDotCredentials());
+            UseSSH = iniCredentials.IniReadValue(SectionGitBitter, KeyUseSSH).Equals("true");
         }
     }
 }
