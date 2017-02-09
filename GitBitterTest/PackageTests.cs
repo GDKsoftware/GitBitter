@@ -11,10 +11,10 @@
     using Test = Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute;
 #endif
 
-    [TestClass]
+    [TestFixture]
     public class PackageTests
     {
-        [TestMethod]
+        [Test]
         public void Clone()
         {
             var package = new Package();
@@ -29,7 +29,7 @@
             Assert.AreEqual(package.Branch, clone.Branch);
         }
 
-        [TestMethod]
+        [Test]
         public void AutoFolder()
         {
             var package = new Package();
