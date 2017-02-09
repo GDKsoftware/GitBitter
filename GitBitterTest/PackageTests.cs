@@ -1,8 +1,15 @@
 ﻿namespace GitBitterTest
 {
     using System;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using GitBitterLib;
+
+#if MONO
+    using NUnit.Framework;
+#else
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using TestFixture = Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute;
+    using Test = Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute;
+#endif
 
     [TestClass]
     public class PackageTests
