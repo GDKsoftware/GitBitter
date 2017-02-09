@@ -1,8 +1,9 @@
 ﻿namespace GitBitterLib
 {
+    using System;
     using System.Collections.Generic;
 
-    public class Package
+    public class Package : ICloneable
     {
         public string Folder { get; set; }
 
@@ -26,6 +27,11 @@
                     Folder = Repository.Substring(idxSlash + 1, idxDotGit - 1 - idxSlash);
                 }
             }
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 

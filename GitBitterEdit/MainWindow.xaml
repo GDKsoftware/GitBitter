@@ -18,7 +18,7 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="150" MinWidth="150" />
             </Grid.ColumnDefinitions>
-            <ListBox x:Name="listBox" Margin="10,10,10,41"/>
+            <ListBox x:Name="listBox" Margin="10,10,10,41" MouseDoubleClick="listBox_MouseDoubleClick"/>
             <GridSplitter x:Name="gridSplitter" Width="5" Grid.Column="1" HorizontalAlignment="Stretch"/>
             <Grid Margin="402,0,0,0">
             </Grid>

@@ -83,6 +83,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EditPackageDetails.xaml.cs">
+      <DependentUpon>EditPackageDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CredentialUIMono.cs" />
     <Compile Include="GitConfigEdit.xaml.cs">
       <DependentUpon>GitConfigEdit.xaml</DependentUpon>
@@ -93,6 +96,10 @@
     <Compile Include="RepoSelect.xaml.cs">
       <DependentUpon>RepoSelect.xaml</DependentUpon>
     </Compile>
+    <Page Include="EditPackageDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="GitConfigEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

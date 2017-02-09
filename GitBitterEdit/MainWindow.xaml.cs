@@ -161,6 +161,30 @@ namespace GitBitterEdit
             }
         }
 
+        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var idx = listBox.SelectedIndex;
+            if (idx != -1)
+            {
+                var package = config.Settings.Packages[idx];
+
+                EditPackage(package);
+            }
+        }
+
+        private void EditPackage(Package package)
+        {
+            var form = new EditPackageDetails();
+            form.Owner = this;
+            form.SetObject(package);
+            if (form.ShowDialog() == true)
+            {
+                config.Save();
+
+                RefreshPackageSettings();
+            }
+        }
+
         private void btnGitConfig_Click(object sender, RoutedEventArgs e)
         {
             var frm = new GitConfigEdit();
