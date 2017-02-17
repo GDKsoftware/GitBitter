@@ -1,63 +1,121 @@
 ﻿namespace GitBitterLib
 {
-    using System;
-    using System.IO;
-    using System.Threading.Tasks;
-    using LibGit2Sharp;
-    using LibGit2Sharp.Handlers;
-    using Microsoft.Practices.Unity;
+	using System;
+	using System.IO;
+	using System.Threading.Tasks;
+	using LibGit2Sharp;
+	using LibGit2Sharp.Handlers;
+	using Microsoft.Practices.Unity;
 
-    public class GitSharpCloner : ICloner
-    {
-        private const string AppNameBitbucket = "gitbitter:bitbucket";
-        private const string AppNameGithub = "gitbitter:github";
-        private Identity identity;
-        private bool useSSH = false;
+	public class GitSharpCloner : ICloner
+	{
+		private const string AppNameBitbucket = "gitbitter:bitbucket";
+		private const string AppNameGithub = "gitbitter:github";
+		private Identity identity;
+		private bool useSSH = false;
 
-        public GitSharpCloner()
-        {
-            LoadSettings();
-        }
+		public GitSharpCloner()
+		{
+			LoadSettings();
+		}
 
-        private void LoadSettings()
-        {
-            var gitConfig = new GitConfig();
+		private void LoadSettings()
+		{
+			var gitConfig = new GitConfig();
 
-            identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
-            useSSH = gitConfig.UseSSH;
-        }
+			identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
+			useSSH = gitConfig.UseSSH;
+		}
 
-        public Task Clone(string repository, string rootdir, string repodir, string branch)
-        {
-            return CloneBitBucketRepo(repository, rootdir, repodir, branch);
+		private string GetUrlForRepository(string repository)
+		{
+			if (useSSH)
+			{
+#if MONO
+				// todo: find out why we need to do this on OSX/mono
+				return repository.Replace("https://", "git://git@");
+#else
+				return repository.Replace("https://", "ssh://git@");
+#endif
+			}
+			else
+			{
+				return repository;
+			}
+		}
+
+		public Task Clone(string repository, string rootdir, string repodir, string branch)
+		{
+			var task = new Task(() =>
+			{
+				var logging = GitBitterContainer.Default.Resolve<IGitBitterLogging>();
+
+				string url = GetUrlForRepository(repository);
+
+				string stage = "initialization";
+				try
+				{
+					var options = GetCloneOptions(url, branch);
+					var fullRepoPath = Path.Combine(rootdir, repodir);
+
+					stage = "cloning";
+					Repository.Clone(url, fullRepoPath, options);
+
+					logging.Add("Finished cloning " + repodir, LoggingLevel.Info);
+				}
+				catch (Exception ex)
+				{
+					throw new ClonerException(ex, repodir, url, stage);
+				}
+			});
+			task.Start();
+			return task;
         }
 
         public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branch)
         {
             var task = new Task(() =>
             {
-                var fullRepoPath = Path.Combine(rootdir, repodir);
+				var logging = GitBitterContainer.Default.Resolve<IGitBitterLogging>();
 
-                var options = new PullOptions();
-                options.FetchOptions = new FetchOptions();
+				string url = GetUrlForRepository(repository);
 
-                if (useSSH)
-                {
-                    options.FetchOptions.CredentialsProvider = GetCredentialHandlerSSH(repository);
-                }
-                else
-                {
-                    options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
-                }
+				string stage = "initialization";
+				try
+				{
+					var fullRepoPath = Path.Combine(rootdir, repodir);
 
-                var sig = new Signature(identity, DateTime.Now);
+					var options = new PullOptions();
+					options.FetchOptions = new FetchOptions();
 
-                var repo = new Repository(fullRepoPath);
-                repo.Reset(ResetMode.Hard);
+					if (useSSH)
+					{
+						options.FetchOptions.CredentialsProvider = GetCredentialHandlerSSH(repository);
+					}
+					else
+					{
+						options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
+					}
 
-                Commands.Pull(repo, sig, options);
+					var sig = new Signature(identity, DateTime.Now);
 
-                Commands.Checkout(repo, branch);
+					var repo = new Repository(fullRepoPath);
+
+					stage = "reset";
+					repo.Reset(ResetMode.Hard);
+
+					stage = "pull";
+					Commands.Pull(repo, sig, options);
+
+					stage = "checkout " + branch;
+					Commands.Checkout(repo, branch);
+
+					logging.Add("Finished updating " + repodir, LoggingLevel.Info);
+				}
+				catch (Exception ex)
+				{
+					throw new ClonerException(ex, repodir, url, stage);
+				}
             });
             task.Start();
             return task;
@@ -122,25 +180,6 @@
             }
 
             return options;
-        }
-
-        private Task CloneBitBucketRepo(string repository, string rootdir, string repodir, string branch)
-        {
-            var task = new Task(() =>
-            {
-                string url = repository;
-                if (useSSH)
-                {
-                    url = repository.Replace("https://", "ssh://git@");
-                }
-
-                var options = GetCloneOptions(url, branch);
-                var fullRepoPath = Path.Combine(rootdir, repodir);
-
-                Repository.Clone(url, fullRepoPath, options);
-            });
-            task.Start();
-            return task;
         }
     }
 }
