@@ -45,7 +45,15 @@
             this.inifilepath = filepath;
 
             ini = new MadMilkman.Ini.IniFile();
-            ini.Load(filepath);
+
+            try
+            {
+                ini.Load(filepath);
+            }
+            catch (Exception)
+            {
+                // ignoring errors when a file doesn't exist is the default behaviour in Windows too
+            }
         }
     }
 }
