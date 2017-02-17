@@ -22,16 +22,22 @@
 
             try
             {
-                if (args.Length > 0)
+                var parameters = new ParameterProcessing(args);
+
+                PackageUnwrapper unwrapper = new PackageUnwrapper(parameters.Filepath);
+
+                if (parameters.Command == ParameterCommand.Add)
                 {
-                    var unwrapper = new PackageUnwrapper(args[0]);
-                    unwrapper.StartAndWaitForUnwrapping();
+                    var package = new Package();
+                    package.Repository = parameters.CommandArg1;
+                    package.SetDefaultFolder();
+
+                    unwrapper.Settings.Packages.Add(package);
+
+                    unwrapper.Save();
                 }
-                else
-                {
-                    var unwrapper = new PackageUnwrapper();
-                    unwrapper.StartAndWaitForUnwrapping();
-                }
+
+                unwrapper.StartAndWaitForUnwrapping();
 
                 Environment.Exit(0);
             }

@@ -123,6 +123,7 @@
     <Compile Include="PackageUnwrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecureStringHelper.cs" />
+    <Compile Include="Implementations\ParameterProcessing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
