@@ -38,12 +38,6 @@
             {
                 var fullRepoPath = Path.Combine(rootdir, repodir);
 
-                string url = repository;
-                if (useSSH)
-                {
-                    url = repository.Replace("https://", "ssh://git@");
-                }
-
                 var options = new PullOptions();
                 options.FetchOptions = new FetchOptions();
 

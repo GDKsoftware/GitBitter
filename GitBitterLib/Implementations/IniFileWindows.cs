@@ -44,7 +44,7 @@
         public string IniReadValue(string section, string key)
         {
             StringBuilder temp = new StringBuilder(255);
-            int i = GetPrivateProfileString(section, key, string.Empty, temp, 255, this.Path);
+            GetPrivateProfileString(section, key, string.Empty, temp, 255, this.Path);
             return temp.ToString();
         }
 
