@@ -8,4 +8,4 @@
 * GitBitter - A commandline tool to clone or pull packaged repositories.
 
 
-The tool is currently Windows-only.
+The GitBitterEdit tool is currently Windows-only, but the GitBitter command line can be used with Mono.
