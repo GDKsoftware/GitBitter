@@ -107,20 +107,14 @@
                     }
 
                     stage = "pull";
-                    var mergeResult = Commands.Pull(repo, sig, options);
-                    if (mergeResult.Status == MergeStatus.UpToDate)
-                    {
-                        var branch = GetOrCreateLocalBranch(repo, branchname);
+                    Commands.Pull(repo, sig, options);
 
-                        stage = "checkout " + branchname;
-                        Commands.Checkout(repo, branch);
+                    var branch = GetOrCreateLocalBranch(repo, branchname);
 
-                        logging.Add("Finished updating " + repodir, LoggingLevel.Info);
-                    }
-                    else
-                    {
-                        throw new Exception("error when performing pull" + mergeResult.ToString());
-                    }
+                    stage = "checkout " + branchname;
+                    Commands.Checkout(repo, branch);
+
+                    logging.Add("Finished updating " + repodir, LoggingLevel.Info);
                 }
                 catch (Exception ex)
                 {
