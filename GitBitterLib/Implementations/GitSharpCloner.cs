@@ -176,20 +176,20 @@
             var privkey = filesAndFolders.SSHPrivateKeyFile();
             var pubkey = filesAndFolders.SSHPublicKeyFile();
 
-            if (!File.Exists(privkey) || !File.Exists(pubkey))
-            {
-                var credentials = new SshAgentCredentials();
-                credentials.Username = "git";
-
-                return (_url, _user, _cred) => credentials;
-            }
-            else
+            if (File.Exists(privkey) && File.Exists(pubkey))
             {
                 var credentials = new SshUserKeyCredentials();
                 credentials.Username = "git";
                 credentials.Passphrase = string.Empty;
                 credentials.PrivateKey = privkey;
                 credentials.PublicKey = pubkey;
+
+                return (_url, _user, _cred) => credentials;
+            }
+            else
+            {
+                var credentials = new SshAgentCredentials();
+                credentials.Username = "git";
 
                 return (_url, _user, _cred) => credentials;
             }
