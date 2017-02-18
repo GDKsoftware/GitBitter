@@ -17,7 +17,7 @@
         [Test]
         public void NoParams()
         {
-            var parameters = new ParameterProcessing([]);
+            var parameters = new ParameterProcessing(new string[] { });
 
             Assert.AreEqual(ParameterCommand.None, parameters.Command);
             Assert.AreEqual("gitbitter.json", parameters.Filepath);
@@ -27,7 +27,7 @@
         [Test]
         public void AlternativeJSON()
         {
-            var parameters = new ParameterProcessing(["c:/test/gitbitter.json"]);
+            var parameters = new ParameterProcessing(new string[] { "c:/test/gitbitter.json" });
 
             Assert.AreEqual(ParameterCommand.None, parameters.Command);
             Assert.AreEqual("c:/test/gitbitter.json", parameters.Filepath);
@@ -37,7 +37,7 @@
         [Test]
         public void AddPackage()
         {
-            var parameters = new ParameterProcessing(["add","https://github.com/GDKsoftware/QueryDesk.git"]);
+            var parameters = new ParameterProcessing(new string[] { "add", "https://github.com/GDKsoftware/QueryDesk.git" });
 
             Assert.AreEqual(ParameterCommand.Add, parameters.Command);
             Assert.AreEqual("gitbitter.json", parameters.Filepath);
@@ -47,7 +47,7 @@
         [Test]
         public void AddPackageToAlternativeJSON()
         {
-            var parameters = new ParameterProcessing(["c:/test/gitbitter.json","add","https://github.com/GDKsoftware/QueryDesk.git"]);
+            var parameters = new ParameterProcessing(new string[] { "c:/test/gitbitter.json", "add", "https://github.com/GDKsoftware/QueryDesk.git" });
 
             Assert.AreEqual(ParameterCommand.Add, parameters.Command);
             Assert.AreEqual("c:/test/gitbitter.json", parameters.Filepath);
