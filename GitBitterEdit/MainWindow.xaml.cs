@@ -185,11 +185,41 @@ namespace GitBitterEdit
             }
         }
 
+        private void RemovePackage(Package package)
+        {
+            config.Settings.Packages.Remove(package);
+            config.Save();
+
+            RefreshPackageSettings();
+        }
+
         private void btnGitConfig_Click(object sender, RoutedEventArgs e)
         {
             var frm = new GitConfigEdit();
             frm.Owner = this;
             frm.ShowDialog();
+        }
+
+        private void btnRemove_Click(object sender, RoutedEventArgs e)
+        {
+            var idx = listBox.SelectedIndex;
+            if (idx != -1)
+            {
+                var package = config.Settings.Packages[idx];
+
+                RemovePackage(package);
+            }
+        }
+
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            var idx = listBox.SelectedIndex;
+            if (idx != -1)
+            {
+                var package = config.Settings.Packages[idx];
+
+                EditPackage(package);
+            }
         }
     }
 }
