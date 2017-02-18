@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GitBitterEdit"
         mc:Ignorable="d"
-        Title=".gitconfig" Height="197.611" Width="439.249" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title=".gitconfig" Height="212.264" Width="439.249" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
     <Grid>
         <Label x:Name="LblName" Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <Label x:Name="LblEmail" Content="E-mail" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,38,0,0"/>
-        <CheckBox x:Name="ChkUseSSH" Content="Use SSH authentication" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="ChkUseSSH" Content="Use SSH authentication" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" IsChecked="{Binding UseSSH}"/>
         <Button x:Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="10,0,0,10" Width="75" Height="20" VerticalAlignment="Bottom" Click="BtnCancel_Click"/>
         <Button x:Name="BtnSave" Content="Save" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="BtnSave_Click"/>
-        <TextBox x:Name="EdName" Height="23" Margin="110,14,10,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
-        <TextBox x:Name="EdEmail" Height="23" Margin="110,42,10,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
-
+        <TextBox x:Name="EdName" Height="23" Margin="110,14,10,0" TextWrapping="Wrap" Text="{Binding Path=UserName}" VerticalAlignment="Top"/>
+        <TextBox x:Name="EdEmail" Height="23" Margin="110,42,10,0" TextWrapping="Wrap" Text="{Binding Path=UserEmail}" VerticalAlignment="Top"/>
+        <CheckBox x:Name="ChkUseResetHard" Content="Discard local changes when updating" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top" IsChecked="{Binding UseResetHard}"/>
     </Grid>
 </Window>

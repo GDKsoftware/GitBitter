@@ -8,6 +8,8 @@
     /// </summary>
     public partial class GitConfigEdit : Window
     {
+        private GitConfig config;
+
         public GitConfigEdit()
         {
             InitializeComponent();
@@ -17,21 +19,12 @@
 
         private void Load()
         {
-            var config = new GitConfig();
-            EdName.Text = config.UserName;
-            EdEmail.Text = config.UserEmail;
-
-            EdName.IsEnabled = false;
-            EdEmail.IsEnabled = false;
-
-            ChkUseSSH.IsChecked = config.UseSSH;
+            config = new GitConfig();
+            DataContext = config;
         }
 
         private void Save()
         {
-            var config = new GitConfig();
-            config.UseSSH = ChkUseSSH.IsChecked.GetValueOrDefault();
-
             config.Save();
         }
 
