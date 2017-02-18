@@ -14,10 +14,12 @@
             GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerPlainText>();
             GitBitterContainer.Default.RegisterType<IIniFile, IniFileMadMilkman>();
             GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersMono>();
+			GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingCommandLine>();
 #else
             GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerWindows>();
             GitBitterContainer.Default.RegisterType<IIniFile, IniFileWindows>();
             GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersWindows>();
+			GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingCommandLine>();
 #endif
 
             try

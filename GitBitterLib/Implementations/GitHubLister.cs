@@ -9,7 +9,6 @@
         private const string AppName = "gitbitter:github";
         private const string PreferedLinkProtocol = "https";
         private GitHubClient github;
-        private string username;
 
         public List<RepositoryDescription> GetRepositories(string team)
         {
@@ -61,7 +60,6 @@
                 }
             }
 
-            username = cred.UserName;
             cred = null;
 
             return true;
