@@ -112,7 +112,7 @@
                     {
                         var branch = GetOrCreateLocalBranch(repo, branchname);
 
-                        stage = "checkout " + branch;
+                        stage = "checkout " + branchname;
                         Commands.Checkout(repo, branch);
 
                         logging.Add("Finished updating " + repodir, LoggingLevel.Info);
