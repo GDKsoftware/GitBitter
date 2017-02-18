@@ -12,24 +12,23 @@
         private const string AppNameBitbucket = "gitbitter:bitbucket";
         private const string AppNameGithub = "gitbitter:github";
         private Identity identity;
-        private bool useSSH = false;
+        private GitConfig gitConfig;
 
         public GitSharpCloner()
         {
+            gitConfig = new GitConfig();
+
             LoadSettings();
         }
 
         private void LoadSettings()
         {
-            var gitConfig = new GitConfig();
-
             identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
-            useSSH = gitConfig.UseSSH;
         }
 
         private string GetUrlForRepository(string repository)
         {
-            if (useSSH)
+            if (gitConfig.UseSSH)
             {
 #if MONO
                 // todo: find out why we need to do this on OSX/mono
@@ -88,7 +87,7 @@
                     var options = new PullOptions();
                     options.FetchOptions = new FetchOptions();
 
-                    if (useSSH)
+                    if (gitConfig.UseSSH)
                     {
                         options.FetchOptions.CredentialsProvider = GetCredentialHandlerSSH(repository);
                     }
@@ -101,8 +100,11 @@
 
                     var repo = new Repository(fullRepoPath);
 
-                    stage = "reset";
-                    repo.Reset(ResetMode.Hard);
+                    if (gitConfig.UseResetHard)
+                    {
+                        stage = "reset";
+                        repo.Reset(ResetMode.Hard);
+                    }
 
                     stage = "pull";
                     Commands.Pull(repo, sig, options);
@@ -170,7 +172,7 @@
             options.BranchName = branch;
             options.Checkout = true;
 
-            if (useSSH)
+            if (gitConfig.UseSSH)
             {
                 options.CredentialsProvider = GetCredentialHandlerSSH(repository);
             }
