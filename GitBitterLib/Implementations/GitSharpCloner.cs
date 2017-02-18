@@ -71,7 +71,7 @@
             return task;
         }
 
-        public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branch)
+        public Task ResetAndUpdateExisting(string repository, string rootdir, string repodir, string branchname)
         {
             var task = new Task(() =>
             {
@@ -107,12 +107,20 @@
                     }
 
                     stage = "pull";
-                    Commands.Pull(repo, sig, options);
+                    var mergeResult = Commands.Pull(repo, sig, options);
+                    if (mergeResult.Status == MergeStatus.UpToDate)
+                    {
+                        var branch = GetOrCreateLocalBranch(repo, branchname);
 
-                    stage = "checkout " + branch;
-                    Commands.Checkout(repo, branch);
+                        stage = "checkout " + branch;
+                        Commands.Checkout(repo, branch);
 
-                    logging.Add("Finished updating " + repodir, LoggingLevel.Info);
+                        logging.Add("Finished updating " + repodir, LoggingLevel.Info);
+                    }
+                    else
+                    {
+                        throw new Exception("error when performing pull" + mergeResult.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -123,27 +131,68 @@
             return task;
         }
 
+        private Branch GetOrCreateLocalBranch(IRepository repo, string branchname)
+        {
+            var localBranch = repo.Branches[branchname];
+
+            if (localBranch == null)
+            {
+                var remoteBranch = GetRemoteBranch(repo, branchname);
+                if (remoteBranch != null)
+                {
+                    return CreateLocalBranchFromRemote(repo, remoteBranch, branchname);
+                }
+            }
+
+            return localBranch;
+        }
+
+        private Branch CreateLocalBranchFromRemote(IRepository repo, Branch remotebranch, string branchname)
+        {
+            var localbranch = repo.CreateBranch(branchname, remotebranch.Tip);
+
+            repo.Branches.Update(localbranch, b => b.TrackedBranch = remotebranch.CanonicalName);
+
+            return localbranch;
+        }
+
+        private Branch GetRemoteBranch(IRepository repo, string branchname)
+        {
+            foreach (var branch in repo.Branches)
+            {
+                if ((branch.FriendlyName == branch.RemoteName + "/" + branchname))
+                {
+                    return branch;
+                }
+            }
+
+            return null;
+        }
+
         private CredentialsHandler GetCredentialHandlerSSH(string repository)
         {
             var filesAndFolders = GitBitterContainer.Default.Resolve<IGitFilesAndFolders>();
 
-            var credentials = new SshUserKeyCredentials();
-            credentials.Username = "git";
-            credentials.Passphrase = string.Empty;
-            credentials.PrivateKey = filesAndFolders.SSHPrivateKeyFile();
-            credentials.PublicKey = filesAndFolders.SSHPublicKeyFile();
+            var privkey = filesAndFolders.SSHPrivateKeyFile();
+            var pubkey = filesAndFolders.SSHPublicKeyFile();
 
-            if (!File.Exists(credentials.PrivateKey))
+            if (!File.Exists(privkey) || !File.Exists(pubkey))
             {
-                throw new FileNotFoundException("Private key not found @ " + credentials.PrivateKey);
-            }
+                var credentials = new SshAgentCredentials();
+                credentials.Username = "git";
 
-            if (!File.Exists(credentials.PublicKey))
+                return (_url, _user, _cred) => credentials;
+            }
+            else
             {
-                throw new FileNotFoundException("Public key not found @ " + credentials.PublicKey);
-            }
+                var credentials = new SshUserKeyCredentials();
+                credentials.Username = "git";
+                credentials.Passphrase = string.Empty;
+                credentials.PrivateKey = privkey;
+                credentials.PublicKey = pubkey;
 
-            return (_url, _user, _cred) => credentials;
+                return (_url, _user, _cred) => credentials;
+            }
         }
 
         private CredentialsHandler GetCredentialHandler(string repository)
