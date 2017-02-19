@@ -39,6 +39,23 @@
             return repositories;
         }
 
+        public List<string> GetTeams()
+        {
+            var teamnames = new List<string>();
+
+            sharpBucket = new SharpBucketV2();
+            if (Login())
+            {
+                var endpoint = sharpBucket.TeamsEndPoint("");
+                foreach (var team in endpoint.GetUserTeams())
+                {
+                    teamnames.Add(team.username);
+                }
+            }
+
+            return teamnames;
+        }
+
         private bool Login()
         {
             ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();

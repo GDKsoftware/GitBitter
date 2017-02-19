@@ -71,8 +71,8 @@
       <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Octokit, Version=0.24.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -83,8 +83,8 @@
       <HintPath>..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SharpBucket, Version=0.6.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpBucket.0.6.4\lib\net40\SharpBucket.dll</HintPath>
+    <Reference Include="SharpBucket, Version=0.6.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpBucket.0.6.5\lib\net40\SharpBucket.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

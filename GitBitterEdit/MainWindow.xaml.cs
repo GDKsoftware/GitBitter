@@ -22,8 +22,6 @@ namespace GitBitterEdit
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string teamNameBitbucket = "GDK";
-        private const string teamNameGitHub = "gdksoftware";
         private string settingsPath;
         private PackageConfig config;
 
@@ -96,7 +94,7 @@ namespace GitBitterEdit
         {
             try
             {
-                var select = new RepoSelect(new BitbucketLister(), teamNameBitbucket);
+                var select = new RepoSelect(new BitbucketLister());
                 select.Owner = this;
                 select.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -137,7 +135,7 @@ namespace GitBitterEdit
         {
             try
             {
-                var select = new RepoSelect(new GitHubLister(), teamNameGitHub);
+                var select = new RepoSelect(new GitHubLister());
                 select.Owner = this;
                 select.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 

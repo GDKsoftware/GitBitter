@@ -20,6 +20,16 @@ namespace GitBitterEdit
     /// </summary>
     public partial class RepoSelect : Window
     {
+        private IBitterRepositoryLister repoLister;
+
+        private string teamName
+        {
+            get
+            {
+                return edTeam.Text;
+            }
+        }
+
         public RepositoryDescription SelectRepository
         {
             get
@@ -28,11 +38,39 @@ namespace GitBitterEdit
             }
         }
 
-        public RepoSelect(IBitterRepositoryLister repoLister, string teamName)
+        public RepoSelect(IBitterRepositoryLister repoLister)
         {
             InitializeComponent();
 
-            lstRepositories.ItemsSource = repoLister.GetRepositories(teamName);
+            this.repoLister = repoLister;
+
+            RefreshTeams();
+            RefreshList(teamName);
+        }
+
+        private void RefreshTeams()
+        {
+            string currentSelection = edTeam.Text;
+
+            edTeam.ItemsSource = this.repoLister.GetTeams();
+
+            if (currentSelection != "")
+            {
+                var idx = edTeam.Items.IndexOf(currentSelection);
+                if (idx != -1)
+                {
+                    edTeam.SelectedIndex = idx;
+                }
+            }
+            else
+            {
+                edTeam.SelectedIndex = 0;
+            }
+        }
+
+        private void RefreshList(string teamName)
+        {
+            lstRepositories.ItemsSource = this.repoLister.GetRepositories(teamName);
             lstRepositories.DisplayMemberPath = "Name";
         }
 
@@ -49,6 +87,14 @@ namespace GitBitterEdit
         private void lstRepositories_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             this.DialogResult = true;
+        }
+        
+        private void edTeam_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                RefreshList((string)e.AddedItems[0]);
+            }
         }
     }
 }

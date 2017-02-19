@@ -5,6 +5,8 @@
     public interface IBitterRepositoryLister
     {
         List<RepositoryDescription> GetRepositories(string team);
+
+        List<string> GetTeams();
     }
 
     public class RepositoryDescription
