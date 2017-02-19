@@ -38,6 +38,15 @@
 
                     unwrapper.Save();
                 }
+                else if (parameters.Command == ParameterCommand.Del)
+                {
+                    var package = unwrapper.Settings.Packages.Find(p => p.Folder.Equals(parameters.CommandArg1));
+                    if (package != null)
+                    {
+                        unwrapper.Settings.Packages.Remove(package);
+                        unwrapper.Save();
+                    }
+                }
 
                 unwrapper.StartAndWaitForUnwrapping();
 

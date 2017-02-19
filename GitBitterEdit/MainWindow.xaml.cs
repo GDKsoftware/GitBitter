@@ -36,11 +36,13 @@ namespace GitBitterEdit
             GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersMono>();
             GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerPlainText>();
             GitBitterContainer.Default.RegisterType<ICredentialUI, CredentialUIMono>();
+            GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingVoid>();
 #else
             GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerWindows>();
             GitBitterContainer.Default.RegisterType<IIniFile, IniFileWindows>();
             GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersWindows>();
             GitBitterContainer.Default.RegisterType<ICredentialUI, CredentialUIWindows>();
+            GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingVoid>();
 #endif
 
             settingsPath = Environment.CurrentDirectory;
