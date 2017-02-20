@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GitBitterEdit"
         mc:Ignorable="d"
-        Title="GitBitter Editor" Height="534.825" Width="774.659">
+        Title="GitBitter Editor" Height="534.825" Width="774.659" Icon="bitterkoekje.ico">
     <Grid>
         <Menu x:Name="menu" Height="20" VerticalAlignment="Top">
             <MenuItem Header="File">
