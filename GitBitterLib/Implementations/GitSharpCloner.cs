@@ -26,6 +26,13 @@
             identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
         }
 
+        private bool MessageProgressHandler(string logmessage)
+        {
+            var logging = GitBitterContainer.Default.Resolve<IGitBitterLogging>();
+            logging.Add(logmessage, LoggingLevel.Info);
+            return true;
+        }
+
         private string GetUrlForRepository(string repository)
         {
             if (gitConfig.UseSSH)
@@ -58,6 +65,10 @@
                     var fullRepoPath = Path.Combine(rootdir, repodir);
 
                     stage = "cloning";
+
+                    logging.Add("Starting cloning " + repodir, LoggingLevel.Info);
+
+                    options.OnProgress = MessageProgressHandler;
                     Repository.Clone(url, fullRepoPath, options);
 
                     logging.Add("Finished cloning " + repodir, LoggingLevel.Info);
@@ -107,6 +118,8 @@
                     }
 
                     stage = "pull";
+                    options.FetchOptions.OnProgress = MessageProgressHandler;
+                    
                     Commands.Pull(repo, sig, options);
 
                     var branch = GetOrCreateLocalBranch(repo, branchname);
