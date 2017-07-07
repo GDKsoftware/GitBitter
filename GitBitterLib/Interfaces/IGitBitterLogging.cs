@@ -11,6 +11,6 @@
 
     public interface IGitBitterLogging
     {
-        void Add(string AMessage, LoggingLevel ALevel);
+        void Add(string AMessage, LoggingLevel ALevel, string AModule);
     }
 }

@@ -25,14 +25,7 @@
         {
             identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
         }
-
-        private bool MessageProgressHandler(string logmessage)
-        {
-            var logging = GitBitterContainer.Default.Resolve<IGitBitterLogging>();
-            logging.Add(logmessage, LoggingLevel.Info);
-            return true;
-        }
-
+        
         private string GetUrlForRepository(string repository)
         {
             if (gitConfig.UseSSH)
@@ -59,19 +52,22 @@
                 string url = GetUrlForRepository(repository);
 
                 string stage = "initialization";
+                logging.Add(stage, LoggingLevel.Info, repodir);
                 try
                 {
                     var options = GetCloneOptions(url, branch);
                     var fullRepoPath = Path.Combine(rootdir, repodir);
 
                     stage = "cloning";
+                    logging.Add(stage, LoggingLevel.Info, repodir);
 
-                    logging.Add("Starting cloning " + repodir, LoggingLevel.Info);
-
-                    options.OnProgress = MessageProgressHandler;
+                    options.OnProgress = (logmessage) => {
+                        logging.Add(logmessage, LoggingLevel.Info, repodir);
+                        return true;
+                    };
                     Repository.Clone(url, fullRepoPath, options);
 
-                    logging.Add("Finished cloning " + repodir, LoggingLevel.Info);
+                    logging.Add("Finished Cloning", LoggingLevel.Info, repodir);
                 }
                 catch (Exception ex)
                 {
@@ -91,6 +87,7 @@
                 string url = GetUrlForRepository(repository);
 
                 string stage = "initialization";
+                logging.Add(stage, LoggingLevel.Info, repodir);
                 try
                 {
                     var fullRepoPath = Path.Combine(rootdir, repodir);
@@ -114,20 +111,41 @@
                     if (gitConfig.UseResetHard)
                     {
                         stage = "reset";
-                        repo.Reset(ResetMode.Hard);
+                        logging.Add(stage, LoggingLevel.Info, repodir);
+                        try
+                        {
+                            repo.Reset(ResetMode.Hard);
+                        }
+                        catch (Exception e)
+                        {
+                            if (e.Message.Contains("No valid git object identified by 'HEAD' exists in the repository"))
+                            {
+                                // todo: delete/move folder and re-clone?
+                                throw;
+                            }
+                            else
+                            {
+                                throw;
+                            }
+                        }
                     }
 
                     stage = "pull";
-                    options.FetchOptions.OnProgress = MessageProgressHandler;
+                    logging.Add(stage, LoggingLevel.Info, repodir);
+                    options.FetchOptions.OnProgress = (logmessage) => {
+                        logging.Add(logmessage, LoggingLevel.Info, repodir);
+                        return true;
+                    };
                     
                     Commands.Pull(repo, sig, options);
 
                     var branch = GetOrCreateLocalBranch(repo, branchname);
 
                     stage = "checkout " + branchname;
+                    logging.Add(stage, LoggingLevel.Info, repodir);
                     Commands.Checkout(repo, branch);
 
-                    logging.Add("Finished updating " + repodir, LoggingLevel.Info);
+                    logging.Add("Finished updating", LoggingLevel.Info, repodir);
                 }
                 catch (Exception ex)
                 {

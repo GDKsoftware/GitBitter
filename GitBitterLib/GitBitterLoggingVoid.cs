@@ -8,7 +8,7 @@
 		{
 		}
 
-		public void Add(string AMessage, LoggingLevel ALevel)
+		public void Add(string AMessage, LoggingLevel ALevel, string AModule)
 		{
 		}
 	}

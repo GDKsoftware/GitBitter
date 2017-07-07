@@ -8,11 +8,11 @@
         {
         }
 
-        public void Add(string AMessage, LoggingLevel ALevel)
+        public void Add(string AMessage, LoggingLevel ALevel, string AModule)
         {
             if (ALevel != LoggingLevel.Debugging)
             {
-                Console.WriteLine(AMessage);
+                Console.WriteLine("[" + AModule + "] " + AMessage);
             }
         }
     }
