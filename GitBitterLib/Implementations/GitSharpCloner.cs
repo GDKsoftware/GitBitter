@@ -7,6 +7,13 @@
     using LibGit2Sharp.Handlers;
     using Microsoft.Practices.Unity;
 
+    class HarmlessException : Exception
+    {
+        public HarmlessException() : base("HarmlessException")
+        {
+        }
+    };
+
     public class GitSharpCloner : ICloner
     {
         private const string AppNameBitbucket = "gitbitter:bitbucket";
@@ -86,57 +93,38 @@
 
                 string url = GetUrlForRepository(repository);
 
+                var fullRepoPath = Path.Combine(rootdir, repodir);
+                Repository repo = null;
+
                 string stage = "initialization";
                 logging.Add(stage, LoggingLevel.Info, repodir);
                 try
                 {
-                    var fullRepoPath = Path.Combine(rootdir, repodir);
-
                     var options = new PullOptions();
                     options.FetchOptions = new FetchOptions();
+                    options.FetchOptions.OnProgress = (logmessage) =>
+                    {
+                        logging.Add(logmessage, LoggingLevel.Info, repodir);
+                        return true;
+                    };
 
-                    if (gitConfig.UseSSH)
-                    {
-                        options.FetchOptions.CredentialsProvider = GetCredentialHandlerSSH(repository);
-                    }
-                    else
-                    {
-                        options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
-                    }
+                    SetCredentialsProvider(options, repository);
 
                     var sig = new Signature(identity, DateTime.Now);
 
-                    var repo = new Repository(fullRepoPath);
+                    repo = new Repository(fullRepoPath);
 
                     if (gitConfig.UseResetHard)
                     {
                         stage = "reset";
                         logging.Add(stage, LoggingLevel.Info, repodir);
-                        try
-                        {
-                            repo.Reset(ResetMode.Hard);
-                        }
-                        catch (Exception e)
-                        {
-                            if (e.Message.Contains("No valid git object identified by 'HEAD' exists in the repository"))
-                            {
-                                // todo: delete/move folder and re-clone?
-                                throw;
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
+
+                        PerformRepoReset(repository, rootdir, repodir, branchname, fullRepoPath, repo);
                     }
 
                     stage = "pull";
                     logging.Add(stage, LoggingLevel.Info, repodir);
-                    options.FetchOptions.OnProgress = (logmessage) => {
-                        logging.Add(logmessage, LoggingLevel.Info, repodir);
-                        return true;
-                    };
-                    
+
                     Commands.Pull(repo, sig, options);
 
                     var branch = GetOrCreateLocalBranch(repo, branchname);
@@ -147,13 +135,83 @@
 
                     logging.Add("Finished updating", LoggingLevel.Info, repodir);
                 }
+                catch (RepositoryNotFoundException)
+                {
+                    repo.Dispose();
+                    MoveAndReClone(repository, rootdir, repodir, branchname, fullRepoPath);
+                }
+                catch (LibGit2SharpException ex)
+                {
+                    repo.Dispose();
+                    if (ex.Message.Contains("There is no tracking information for the current branch"))
+                    {
+                        MoveAndReClone(repository, rootdir, repodir, branchname, fullRepoPath);
+                    }
+                }
+                catch (HarmlessException)
+                {
+                    // do nothing
+                }
                 catch (Exception ex)
                 {
+                    repo.Dispose();
                     throw new ClonerException(ex, repodir, url, stage);
                 }
             });
             task.Start();
             return task;
+        }
+
+        private void SetCredentialsProvider(PullOptions options, string repository)
+        {
+            if (gitConfig.UseSSH)
+            {
+                options.FetchOptions.CredentialsProvider = GetCredentialHandlerSSH(repository);
+            }
+            else
+            {
+                options.FetchOptions.CredentialsProvider = GetCredentialHandler(repository);
+            }
+        }
+
+        private void PerformRepoReset(string repository, string rootdir, string repodir, string branchname, string fullRepoPath, Repository repo)
+        {
+            try
+            {
+                repo.Reset(ResetMode.Hard);
+            }
+            catch (Exception e)
+            {
+                repo.Dispose();
+                if (e.Message.Contains("No valid git object identified by 'HEAD' exists in the repository"))
+                {
+                    MoveAndReClone(repository, rootdir, repodir, branchname, fullRepoPath);
+
+                    throw new HarmlessException();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        private void MoveAndReClone(string repository, string rootdir, string repodir, string branchname, string fullRepoPath)
+        {
+            MoveToOldFolder(fullRepoPath);
+
+            Clone(repository, rootdir, repodir, branchname).Wait();
+        }
+
+        private static void MoveToOldFolder(string fullRepoPath)
+        {
+            var numberOfOldFolders = 1;
+            while (Directory.Exists(fullRepoPath + "." + numberOfOldFolders + ".old"))
+            {
+                numberOfOldFolders++;
+            }
+
+            Directory.Move(fullRepoPath, fullRepoPath + "." + numberOfOldFolders + ".old");
         }
 
         private Branch GetOrCreateLocalBranch(IRepository repo, string branchname)
