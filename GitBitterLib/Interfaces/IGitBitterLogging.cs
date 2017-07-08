@@ -7,10 +7,10 @@
         Error = 1,
         Info = 2,
         Debugging = 3
-    };
+    }
 
     public interface IGitBitterLogging
     {
-        void Add(string AMessage, LoggingLevel ALevel, string AModule);
+        void Add(string message, LoggingLevel level, string module);
     }
 }

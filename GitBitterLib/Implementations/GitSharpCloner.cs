@@ -7,12 +7,12 @@
     using LibGit2Sharp.Handlers;
     using Microsoft.Practices.Unity;
 
-    class HarmlessException : Exception
+    public class HarmlessException : Exception
     {
         public HarmlessException() : base("HarmlessException")
         {
         }
-    };
+    }
 
     public class GitSharpCloner : ICloner
     {
@@ -41,7 +41,7 @@
                 // todo: find out why we need to do this on OSX/mono
                 return repository.Replace("https://", "git://git@");
 #else
-				return repository.Replace("https://", "ssh://git@");
+                return repository.Replace("https://", "ssh://git@");
 #endif
             }
             else
@@ -68,7 +68,8 @@
                     stage = "cloning";
                     logging.Add(stage, LoggingLevel.Info, repodir);
 
-                    options.OnProgress = (logmessage) => {
+                    options.OnProgress = (logmessage) =>
+                    {
                         logging.Add(logmessage, LoggingLevel.Info, repodir);
                         return true;
                     };
@@ -162,6 +163,17 @@
             return task;
         }
 
+        private void MoveToOldFolder(string fullRepoPath)
+        {
+            var numberOfOldFolders = 1;
+            while (Directory.Exists(fullRepoPath + "." + numberOfOldFolders + ".old"))
+            {
+                numberOfOldFolders++;
+            }
+
+            Directory.Move(fullRepoPath, fullRepoPath + "." + numberOfOldFolders + ".old");
+        }
+
         private void SetCredentialsProvider(PullOptions options, string repository)
         {
             if (gitConfig.UseSSH)
@@ -201,17 +213,6 @@
             MoveToOldFolder(fullRepoPath);
 
             Clone(repository, rootdir, repodir, branchname).Wait();
-        }
-
-        private static void MoveToOldFolder(string fullRepoPath)
-        {
-            var numberOfOldFolders = 1;
-            while (Directory.Exists(fullRepoPath + "." + numberOfOldFolders + ".old"))
-            {
-                numberOfOldFolders++;
-            }
-
-            Directory.Move(fullRepoPath, fullRepoPath + "." + numberOfOldFolders + ".old");
         }
 
         private Branch GetOrCreateLocalBranch(IRepository repo, string branchname)

@@ -19,23 +19,23 @@
 
         private string commandStr;
 
-        private const string cmdStrAdd = "add";
-        private const string cmdStrDel = "del";
+        private const string CmdStrAdd = "add";
+        private const string CmdStrDel = "del";
 
         public ParameterProcessing(string[] args)
         {
             Filepath = "gitbitter.json";
             Command = ParameterCommand.None;
-            commandStr = "";
+            commandStr = string.Empty;
 
             if (args.Length > 0)
             {
-                if ((args.Length > 1) && (args[0].Equals(cmdStrAdd) || args[0].Equals(cmdStrDel)))
+                if ((args.Length > 1) && (args[0].Equals(CmdStrAdd) || args[0].Equals(CmdStrDel)))
                 {
                     commandStr = args[0];
                     CommandArg1 = args[1];
                 }
-                else if ((args.Length > 2) && (args[1].Equals(cmdStrAdd) || args[1].Equals(cmdStrDel)))
+                else if ((args.Length > 2) && (args[1].Equals(CmdStrAdd) || args[1].Equals(CmdStrDel)))
                 {
                     Filepath = args[0];
 
@@ -48,11 +48,11 @@
                 }
             }
 
-            if (commandStr.Equals(cmdStrAdd))
+            if (commandStr.Equals(CmdStrAdd))
             {
                 Command = ParameterCommand.Add;
             }
-            else if (commandStr.Equals(cmdStrDel))
+            else if (commandStr.Equals(CmdStrDel))
             {
                 Command = ParameterCommand.Del;
             }

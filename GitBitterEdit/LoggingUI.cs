@@ -9,7 +9,7 @@
     using System.Threading;
     using System.Windows;
 
-    public class LoggingUI: IGitBitterLogging
+    public class LoggingUI : IGitBitterLogging
     {
         private LoggingForm form = null;
         private List<string> collectedLogging = null;

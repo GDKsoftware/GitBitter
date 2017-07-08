@@ -54,7 +54,7 @@ namespace GitBitterEdit
 
             edTeam.ItemsSource = this.repoLister.GetTeams();
 
-            if (currentSelection != "")
+            if (currentSelection != string.Empty)
             {
                 var idx = edTeam.Items.IndexOf(currentSelection);
                 if (idx != -1)

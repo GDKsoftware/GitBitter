@@ -16,10 +16,10 @@
         {
         }
 
-        public PromptCredentials(SecureString UserName, SecureString Password)
+        public PromptCredentials(SecureString username, SecureString password)
         {
-            this.UserName = UserName;
-            this.Password = Password;
+            this.UserName = username;
+            this.Password = password;
         }
     }
 }

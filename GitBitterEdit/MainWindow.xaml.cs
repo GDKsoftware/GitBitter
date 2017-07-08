@@ -129,7 +129,7 @@ namespace GitBitterEdit
             var package = new Package();
             package.Repository = repo.URL;
             package.Folder = repo.Name;
-            if (!String.IsNullOrEmpty(repo.DefaultBranch))
+            if (!string.IsNullOrEmpty(repo.DefaultBranch))
             {
                 package.Branch = repo.DefaultBranch;
             }
