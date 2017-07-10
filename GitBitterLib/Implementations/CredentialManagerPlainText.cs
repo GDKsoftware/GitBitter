@@ -20,7 +20,7 @@
             var username = ini.IniReadValue(applicationName, "username");
             var password = ini.IniReadValue(applicationName, "password");
 
-            if ((username == "") && (password == ""))
+            if ((username == string.Empty) && (password == string.Empty))
             {
                 return null;
             }

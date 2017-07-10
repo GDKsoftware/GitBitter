@@ -1,15 +1,13 @@
 ﻿namespace GitBitterLib
 {
-	using System;
+    public class GitBitterLoggingVoid : IGitBitterLogging
+    {
+        public GitBitterLoggingVoid()
+        {
+        }
 
-	public class GitBitterLoggingVoid : IGitBitterLogging
-	{
-		public GitBitterLoggingVoid()
-		{
-		}
-
-		public void Add(string AMessage, LoggingLevel ALevel)
-		{
-		}
-	}
+        public void Add(string message, LoggingLevel level, string module)
+        {
+        }
+    }
 }

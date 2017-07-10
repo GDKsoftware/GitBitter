@@ -46,7 +46,7 @@
             sharpBucket = new SharpBucketV2();
             if (Login())
             {
-                var endpoint = sharpBucket.TeamsEndPoint("");
+                var endpoint = sharpBucket.TeamsEndPoint(string.Empty);
                 foreach (var team in endpoint.GetUserTeams())
                 {
                     teamnames.Add(team.username);

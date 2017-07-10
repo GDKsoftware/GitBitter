@@ -4,9 +4,9 @@
     using GitBitterLib;
     using Microsoft.Practices.Unity;
 
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             GitBitterContainer.Default.RegisterType<ICloner, GitSharpCloner>();
 
@@ -19,7 +19,7 @@
             GitBitterContainer.Default.RegisterType<ICredentialManager, CredentialManagerWindows>();
             GitBitterContainer.Default.RegisterType<IIniFile, IniFileWindows>();
             GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersWindows>();
-			GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingCommandLine>();
+            GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingCommandLine>();
 #endif
 
             try

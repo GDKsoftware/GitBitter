@@ -42,7 +42,7 @@ namespace GitBitterEdit
             GitBitterContainer.Default.RegisterType<IIniFile, IniFileWindows>();
             GitBitterContainer.Default.RegisterType<IGitFilesAndFolders, GitFilesAndFoldersWindows>();
             GitBitterContainer.Default.RegisterType<ICredentialUI, CredentialUIWindows>();
-            GitBitterContainer.Default.RegisterType<IGitBitterLogging, GitBitterLoggingVoid>();
+            GitBitterContainer.Default.RegisterInstance<IGitBitterLogging>(new LoggingUI(TaskScheduler.FromCurrentSynchronizationContext()));    // use as singleton and create form in mainthread
 #endif
 
             settingsPath = Environment.CurrentDirectory;
@@ -71,15 +71,23 @@ namespace GitBitterEdit
             Cursor = Cursors.Wait;
             try
             {
-                var cloner = new PackageUnwrapper(config.Filename);
-                try
+                var logging = GitBitterContainer.Default.Resolve<IGitBitterLogging>();
+                logging.Add("Updating", LoggingLevel.Info, "GitBitter");
+
+                new Task(() =>
                 {
-                    cloner.StartAndWaitForUnwrapping();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
-                }
+                    var cloner = new PackageUnwrapper(config.Filename);
+                    try
+                    {
+                        cloner.StartAndWaitForUnwrapping();
+                    }
+                    catch (Exception ex)
+                    {
+                        var errormessage = ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace;
+                        logging.Add(errormessage, LoggingLevel.Info, "GitBitter");
+                        MessageBox.Show(errormessage);
+                    }
+                }).Start();
             }
             finally
             {
@@ -121,7 +129,7 @@ namespace GitBitterEdit
             var package = new Package();
             package.Repository = repo.URL;
             package.Folder = repo.Name;
-            if (!String.IsNullOrEmpty(repo.DefaultBranch))
+            if (!string.IsNullOrEmpty(repo.DefaultBranch))
             {
                 package.Branch = repo.DefaultBranch;
             }
