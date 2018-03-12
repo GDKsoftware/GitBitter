@@ -14,6 +14,13 @@
         }
     }
 
+    public class IdentityException : Exception
+    {
+        public IdentityException() : base("Git Identity Name and or Email address missing from configuration")
+        {
+        }
+    }
+
     public class GitSharpCloner : ICloner
     {
         private const string AppNameBitbucket = "gitbitter:bitbucket";
@@ -30,6 +37,11 @@
 
         private void LoadSettings()
         {
+            if (string.IsNullOrEmpty(gitConfig.UserName) || string.IsNullOrEmpty(gitConfig.UserEmail))
+            {
+                throw new IdentityException();
+            }
+
             identity = new Identity(gitConfig.UserName, gitConfig.UserEmail);
         }
         
@@ -79,6 +91,7 @@
                 }
                 catch (Exception ex)
                 {
+                    logging.Add(ex.Message, LoggingLevel.Error, repodir);
                     throw new ClonerException(ex, repodir, url, stage);
                 }
             });

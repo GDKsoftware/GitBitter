@@ -76,16 +76,26 @@ namespace GitBitterEdit
 
                 new Task(() =>
                 {
-                    var cloner = new PackageUnwrapper(config.Filename);
                     try
                     {
+                        var cloner = new PackageUnwrapper(config.Filename);
                         cloner.StartAndWaitForUnwrapping();
+
+                        logging.Add("Update completed", LoggingLevel.Info, "GitBitter");
                     }
                     catch (Exception ex)
                     {
-                        var errormessage = ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace;
-                        logging.Add(errormessage, LoggingLevel.Info, "GitBitter");
-                        MessageBox.Show(errormessage);
+                        if (ex.InnerException is IdentityException)
+                        {
+                            logging.Add(ex.Message, LoggingLevel.Error, "GitBitter");
+                            MessageBox.Show(ex.Message);
+                        }
+                        else
+                        {
+                            var errormessage = ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace;
+                            logging.Add(errormessage, LoggingLevel.Info, "GitBitter");
+                            MessageBox.Show(errormessage);
+                        }
                     }
                 }).Start();
             }
@@ -165,7 +175,20 @@ namespace GitBitterEdit
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
+                if (ex.InnerException.InnerException != null)
+                {
+                    MessageBox.Show(ex.InnerException.Message + "\n\n" + ex.InnerException.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
+                }
+                else
+                {
+                    MessageBox.Show(ex.Message + "\n\n" + ex.InnerException.Message + "\n\n" + ex.InnerException.StackTrace);
+                }
+
+                if (MessageBox.Show("Do you want to reset your login credentials?", "Recovery", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    var lister = new GitHubLister();
+                    lister.ResetCredentials();
+                }
             }
         }
 

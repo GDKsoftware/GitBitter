@@ -13,7 +13,7 @@
     public class CredentialManagerWindows : ICredentialManager
     {
         private static readonly int MaximumCredentialBlobSize = 100;
-
+        
         private enum CredentialPersistence : uint
         {
             Session = 1,
@@ -34,7 +34,19 @@
                 }
             }
 
-            return null;
+            throw new NoCredentialsSetForApplication(applicationName);
+        }
+
+        public Credential ReadCredentialOrNull(string applicationName)
+        {
+            try
+            {
+                return ReadCredential(applicationName);
+            }
+            catch (NoCredentialsSetForApplication)
+            {
+                return null;
+            }
         }
 
         public int WriteCredential(string applicationName, SecureString userName, SecureString password)
@@ -95,6 +107,16 @@
             return new Credential(credential.Type, applicationName, userName, secret);
         }
 
+        public void ResetCredential(string applicationName)
+        {
+            if (!CredDelete(applicationName, CredentialType.Generic, 0))
+            {
+                int lastError = Marshal.GetLastWin32Error();
+
+                throw new Exception("Error trying to reset credentials for " + applicationName + " (Errorcode: " + lastError + ")");
+            }
+        }
+
         [DllImport("Advapi32.dll", EntryPoint = "CredReadW", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern bool CredRead(string target, CredentialType type, int reservedFlag, out IntPtr credentialPtr);
 
@@ -104,6 +126,9 @@
         [DllImport("Advapi32.dll", EntryPoint = "CredFree", SetLastError = true)]
         private static extern bool CredFree([In] IntPtr cred);
 
+        [DllImport("Advapi32.dll", EntryPoint = "CredDelete", SetLastError = true)]
+        private static extern bool CredDelete(string target, CredentialType type, int reservedFlag);
+        
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct CREDENTIAL
         {
