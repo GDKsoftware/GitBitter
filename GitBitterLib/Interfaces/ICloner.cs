@@ -17,6 +17,13 @@
         }
     }
 
+    public class BranchException : Exception
+    {
+        public BranchException(string message) : base(message)
+        {
+        }
+    }
+
     public interface ICloner
     {
         Task Clone(string repository, string rootdir, string repodir, string branchname);

@@ -226,6 +226,10 @@
                 {
                     return CreateLocalBranchFromRemote(repo, remoteBranch, branchname);
                 }
+                else
+                {
+                    throw new BranchException("Branch " + branchname + " does not exist.");
+                }
             }
 
             return localBranch;
