@@ -71,7 +71,8 @@
         private bool Login()
         {
             ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
-            githubcredentials = credmanager.ReadCredential(AppName);
+            githubcredentials = credmanager.ReadCredentialOrNull(AppName);
+
             while (githubcredentials == null)
             {
                 ICredentialUI credUI = GitBitterContainer.Default.Resolve<ICredentialUI>();
@@ -89,6 +90,12 @@
             }
 
             return true;
+        }
+
+        public void ResetCredentials()
+        {
+            ICredentialManager credmanager = GitBitterContainer.Default.Resolve<ICredentialManager>();
+            credmanager.ResetCredential(AppName);
         }
     }
 }

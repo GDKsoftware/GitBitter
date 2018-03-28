@@ -7,6 +7,8 @@
         List<RepositoryDescription> GetRepositories(string team);
 
         List<string> GetTeams();
+
+        void ResetCredentials();
     }
 
     public class RepositoryDescription

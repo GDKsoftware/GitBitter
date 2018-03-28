@@ -22,7 +22,7 @@
 
             if ((username == string.Empty) && (password == string.Empty))
             {
-                return null;
+                throw new NoCredentialsSetForApplication(applicationName);
             }
             else
             {
@@ -34,6 +34,27 @@
 
                 return cred;
             }
+        }
+
+        public Credential ReadCredentialOrNull(string applicationName)
+        {
+            try
+            {
+                return ReadCredential(applicationName);
+            }
+            catch (NoCredentialsSetForApplication)
+            {
+                return null;
+            }
+        }
+
+        public void ResetCredential(string applicationName)
+        {
+            IIniFile ini = GitBitterContainer.Default.Resolve<IIniFile>();
+            ini.SetFile(filepath);
+
+            ini.IniWriteValue(applicationName, "username", "");
+            ini.IniWriteValue(applicationName, "password", "");
         }
 
         public int WriteCredential(string applicationName, SecureString userName, SecureString password)
