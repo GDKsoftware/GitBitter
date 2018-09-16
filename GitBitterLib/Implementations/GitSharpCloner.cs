@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using LibGit2Sharp;
     using LibGit2Sharp.Handlers;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class HarmlessException : Exception
     {

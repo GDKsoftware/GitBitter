@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using SharpBucket.V2;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class BitbucketLister : IBitterRepositoryLister
     {

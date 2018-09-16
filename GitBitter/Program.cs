@@ -2,7 +2,7 @@
 {
     using System;
     using GitBitterLib;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class Program
     {
