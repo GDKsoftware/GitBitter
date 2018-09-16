@@ -16,7 +16,7 @@ Run GitBitterEdit on Windows if you can, you'll be able to log in to your Github
 
 Or create a gitbitter.json file in your projects folder, and run gitbitter.exe from this directory.
 
-## Example gitbitter.json
+### Example gitbitter.json
 
 ```
 {
@@ -34,3 +34,19 @@ Or create a gitbitter.json file in your projects folder, and run gitbitter.exe f
   ]
 }
 ```
+
+## Gitbitter configuration
+
+If you're not using GitBitterEdit, you might want to know a way to configure some settings. We use an ini style file in your user directory \users\yourusername\.gitcredentials on Windows, and /home/yourusername/.gitcredentials on Linux/MacOSX.
+
+### Example .gitcredentials
+
+```
+[gitbitter]
+usessh=true
+useresethard=true
+```
+
+The usessh flag changes the urls to clone to their ssh equivalents while cloning the repositories. This will be almost always have to be set to true when you don't use GitBitterEdit.
+
+The useresethard flag will always do a 'git reset --hard' command before fetching the latest updates from the repository. If you don't accidentally want to lose changes you've done to the references repositories, you should set this to false. Be aware that you might get errors while running gitbitter if you do, this is to warn you there are uncommitted changes somewhere.
