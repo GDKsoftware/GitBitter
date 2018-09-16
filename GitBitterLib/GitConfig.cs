@@ -2,7 +2,7 @@
 {
     using System;
     using System.IO;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class GitConfig
     {

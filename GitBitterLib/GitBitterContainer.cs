@@ -1,6 +1,6 @@
 ﻿namespace GitBitterLib
 {
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public static class GitBitterContainer
     {

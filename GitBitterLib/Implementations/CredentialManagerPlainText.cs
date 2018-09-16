@@ -1,7 +1,7 @@
 ﻿namespace GitBitterLib
 {
     using System.Security;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
     public class CredentialManagerPlainText : ICredentialManager
     {

@@ -4,7 +4,7 @@
     using System.IO;
     using System.Threading.Tasks;
     using GitBitterLib;
-    using Microsoft.Practices.Unity;
+    using Unity;
 
 #if MONO
     using NUnit.Framework;
