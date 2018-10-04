@@ -25,6 +25,7 @@
     {
         private const string AppNameBitbucket = "gitbitter:bitbucket";
         private const string AppNameGithub = "gitbitter:github";
+        private const string AppNameGithubAlternative = "git:https://github.com";
         private Identity identity;
         private GitConfig gitConfig;
 
@@ -308,7 +309,16 @@
             }
             else if (repository.Contains("github"))
             {
-                var cred = credmanager.ReadCredential(AppNameGithub);
+                Credential cred;
+                try
+                {
+                    cred = credmanager.ReadCredential(AppNameGithub);
+                }
+                catch (Exception)
+                {
+                    cred = credmanager.ReadCredential(AppNameGithubAlternative);
+                }
+
                 credentials.Username = cred.UserName;
                 credentials.Password = cred.Password;
             }
