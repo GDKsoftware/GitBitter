@@ -1,6 +1,8 @@
 ﻿namespace GitBitterLib
 {
+    using System;
     using System.Collections.Generic;
+    using System.Net;
     using SharpBucket.V2;
     using Unity;
 
@@ -13,13 +15,14 @@
 
         public BitbucketLister()
         {
+            sharpBucket = new SharpBucketV2();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
         public List<RepositoryDescription> GetRepositories(string team)
         {
             var repositories = new List<RepositoryDescription>();
 
-            sharpBucket = new SharpBucketV2();
             if (Login())
             {
                 var repoEndPoint = sharpBucket.RepositoriesEndPoint();
@@ -43,13 +46,14 @@
         {
             var teamnames = new List<string>();
 
-            sharpBucket = new SharpBucketV2();
             if (Login())
             {
-                var endpoint = sharpBucket.TeamsEndPoint(string.Empty);
-                foreach (var team in endpoint.GetUserTeams())
+                var endpoint = new BitbucketTeamsEndPoint(sharpBucket);
+                var teams = endpoint.GetUserTeamsWithContributorRole();
+                foreach (var team in teams)
                 {
-                    teamnames.Add(team.username);
+                    if (!teamnames.Contains(team.username))
+                      teamnames.Add(team.username);
                 }
             }
 
