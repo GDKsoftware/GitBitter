@@ -105,6 +105,7 @@
   <ItemGroup>
     <Compile Include="GitBitterLoggingVoid.cs" />
     <Compile Include="Implementations\BitbucketLister.cs" />
+    <Compile Include="Implementations\BitbucketTeams.cs" />
     <Compile Include="Implementations\GitFilesAndFoldersMono.cs" />
     <Compile Include="Implementations\IniFileMadMilkman.cs" />
     <Compile Include="PromptCredentials.cs" />
