@@ -6,7 +6,8 @@
     {
         None = 0,
         Add = 1,
-        Del = 2
+        Del = 2,
+        Batch = 3
     }
 
     public class ParameterProcessing
@@ -21,6 +22,7 @@
 
         private const string CmdStrAdd = "add";
         private const string CmdStrDel = "del";
+        private const string CmdStrBatch = "batch";
 
         public ParameterProcessing(string[] args)
         {
@@ -34,6 +36,20 @@
                 {
                     commandStr = args[0];
                     CommandArg1 = args[1];
+                }
+                else if ((args.Length == 1) && (args[0].Equals(CmdStrBatch)))
+                {
+                    commandStr = args[0];
+                }
+                else if ((args.Length == 2) && (args[0].Equals(CmdStrBatch)))
+                {
+                    commandStr = args[0];
+                    Filepath = args[1];
+                }
+                else if ((args.Length == 2) && (args[1].Equals(CmdStrBatch)))
+                {
+                    commandStr = args[1];
+                    Filepath = args[0];
                 }
                 else if ((args.Length > 2) && (args[1].Equals(CmdStrAdd) || args[1].Equals(CmdStrDel)))
                 {
@@ -55,6 +71,10 @@
             else if (commandStr.Equals(CmdStrDel))
             {
                 Command = ParameterCommand.Del;
+            }
+            else if (commandStr.Equals(CmdStrBatch))
+            {
+                Command = ParameterCommand.Batch;
             }
         }
     }

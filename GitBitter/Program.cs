@@ -47,6 +47,30 @@
                         unwrapper.Save();
                     }
                 }
+                else if (parameters.Command == ParameterCommand.Batch)
+                {
+                    foreach (var package in unwrapper.Settings.Packages)
+                    {
+                        var repoUrl = package.Repository;
+                        if (package.Repository.Contains("github.com"))
+                        {
+                            repoUrl = repoUrl.Replace("ssh://git@", "https://").Replace("git@github.com:", "https://github.com/"); ;
+                        }
+                        else
+                        {
+                            repoUrl = repoUrl.Replace("https://", "ssh://git@");
+                        }
+
+                        var line = "git clone";
+                        line += " --branch " + package.Branch;
+                        line += " " + repoUrl;
+                        line += " \"" + package.Folder + "\"";
+
+                        Console.WriteLine(line);
+                    }
+
+                    Environment.Exit(0);
+                }
 
                 unwrapper.StartAndWaitForUnwrapping();
 
